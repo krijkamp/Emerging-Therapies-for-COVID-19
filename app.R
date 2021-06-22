@@ -13,19 +13,12 @@ library(shiny)
 library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
-library(lubridate)  #@package issues?
+library(lubridate)
 library(rsconnect)
 library(shinyBS)
 if (!require('pacman')) install.packages('pacman'); library(pacman) 
 
 # use this package to conveniently install other packages
-
-# @DEBUG: Remove pacman use library first 
-#@DEBUG: klein app naar server
-# @DEBUG: add parallel
-
-
-
 p_load("matrixStats", "ggplot2", 
        "scales", "reshape2",
        "nlme", "mgcv", "BCEA", 
@@ -37,8 +30,6 @@ p_load("matrixStats", "ggplot2",
        "here", "dplyr","ellipse", "ggplot2", "lazyeval", 
        "igraph", "ggraph","knitr", "plyr", "stats", "diagram",
        "triangle", "HMDHFDplus", "blscrapeR", "here", "gridExtra", "foreach", "mondate",  "parallel")
-
-
 
 
 p_load_gh("DARTH-git/dampack") # coding framework to construct model-based cost-effectiveness analysis in R
