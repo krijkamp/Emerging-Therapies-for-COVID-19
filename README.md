@@ -12,6 +12,8 @@ Link full manuscript
 
 # Web application
 
+ https://ekrijkamp.shinyapps.io/Value-of-research-for-COVID-19-therapies/
+
 
 # Main results
 The full source code of the project can be found the folder XXX
