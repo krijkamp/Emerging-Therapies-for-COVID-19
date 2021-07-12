@@ -8,7 +8,7 @@
 #
 
 
-# Load the packages 
+library(shiny)
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
@@ -55,11 +55,10 @@ library(diagram)
 library(blscrapeR)
 library(foreach)
 library(mondate)
+library(dampack)
 
+library(darthtools) # a R package that contains tools frequently used by the DARTH workgroup
 
-library("dampack") # coding framework to construct model-based cost-effectiveness analysis in R
-#p_load_gh("DARTH-git/darthpack") # package for analyzing and visualizing the health economic outputs of mathematical models
-library("darthtools") # a R package that contains tools frequently used by the DARTH workgroup
 
 
 rm(list=ls())

@@ -1,12 +1,18 @@
+@import url('https://fonts.google.com/specimen/Poppins?query=Poppins');
+@import url('https://fonts.google.com/specimen/Comfortaa?query=comfor');
+
 
 @font-face {
     font-family: 'Poppins';
-    src: url('Poppins-ExtraLight.ttf');
+    src: url('https://fonts.google.com/specimen/Poppins?query=Poppins');
 }
+
+
+
 
 @font-face {
     font-family: 'Comfortaa';
-    src: url('Comfortaa-VariableFond_wght.ttf');
+    src: url('https://fonts.google.com/specimen/Comfortaa?query=comfor') ;
 }
 
 

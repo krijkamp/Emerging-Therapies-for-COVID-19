@@ -5,9 +5,10 @@ account: ekrijkamp
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4028489
-bundleId: 4810968
+bundleId: 4811388
 url: https://ekrijkamp.shinyapps.io/Value-of-research-for-COVID-19-therapies/
-when: 1626091913.36749
-lastSyncTime: 1626091913.3675
+when: 1626099766.43017
+lastSyncTime: 1626099766.43018
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: test
