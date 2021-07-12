@@ -16,21 +16,46 @@ library(shinyjs)
 library(lubridate)
 library(rsconnect)
 library(shinyBS)
+library(matrixStats)
+library(ggplot2)
+library(scales)
+library(reshape2)
+library(nlme)
+library(mgcv)
+library(BCEA)
+library(inlabru)
+library(devtools)
+library(tibble)
+library(tidyverse)
+library(ggpubr)
+library(rms)
+library(Rmisc)
+library(fmsb)
+library(remotes)
+library(readxl)
+library(plyr)
+library(stats)
+library(triangle)
+library(EnvStats)
+library(e1071)
+library(meta)
+library(metafor)
+library(gridExtra)
+library(here)
+library(dplyr)
+library(ellipse)
+library(ggplot2)
+library(lazyeval)
+library(igraph)
+library(ggraph)
+library(knitr)
+library(plyr)
+library(stats)
+library(diagram)
+library(blscrapeR)
+library(foreach)
+library(mondate)
 
-# use this package to conveniently install other packages
-packages_to_load <- c("matrixStats", "ggplot2", 
-       "scales", "reshape2",
-       "nlme", "mgcv", "BCEA", 
-       "inlabru", "devtools",
-       "tibble", "tidyverse", "ggpubr",
-       "rms", "europepmc", "Rmisc",
-       "fmsb", "remotes", "readxl", "plyr", "stats", "triangle",
-       "EnvStats", "e1071", "meta","metafor", "gridExtra", 
-       "here", "dplyr","ellipse", "ggplot2", "lazyeval", 
-       "igraph", "ggraph","knitr", "plyr", "stats", "diagram",
-       "triangle", "HMDHFDplus", "blscrapeR", "here", "gridExtra", "foreach", "mondate")
-
-lapply(packages_to_load, library, character.only = TRUE)
 
 library("dampack") # coding framework to construct model-based cost-effectiveness analysis in R
 #p_load_gh("DARTH-git/darthpack") # package for analyzing and visualizing the health economic outputs of mathematical models
