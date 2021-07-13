@@ -90,7 +90,8 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            plotOutput("distPlot"),
-           plotOutput("distPlotE")
+           plotOutput("distPlotE"),
+           plotOutput("textParallel")
         )
     )
 )
@@ -118,7 +119,29 @@ server <- function(input, output) {
         
     })
     
-    
+    output$textParallel <- renderPlot({
+        # Generate data
+        data <- 1:1e2
+        data_list <- list("1" = data,
+                          "2" = data^input$bins,
+                          "3" = data*input$bins,
+                          "4" = data/input$bins)
+        # Detect the number of available cores and create cluster
+        cl <- parallel::makeCluster(detectCores())
+        # Activate cluster for foreach library
+        doParallel::registerDoParallel(cl)
+        time_foreach <- system.time({
+            r <- foreach::foreach(i = 1:length(data_list),
+                                  .combine = rbind) %dopar% {
+                                      mean(data_list[[i]])
+                                  }
+        })
+        time_foreach[3]
+        # Stop cluster to free up resources
+        parallel::stopCluster(cl)
+        
+        hist(r[,1])
+    })
 }
 
 # Run the application 

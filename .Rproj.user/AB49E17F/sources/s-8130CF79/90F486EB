@@ -1,7 +1,7 @@
 {
     "id": "90F486EB",
-    "path": "~/Documents/GitHub/Emerging-Therapies-for-COVID-19/test/app.R",
-    "project_path": "test/app.R",
+    "path": "~/Documents/GitHub/Emerging-Therapies-for-COVID-19/test/app_with parallel.R",
+    "project_path": "test/app_with parallel.R",
     "type": "r_source",
     "hash": "2126362449",
     "contents": "",
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "123,21",
-        "scrollLine": "114"
+        "cursorPosition": "122,4",
+        "scrollLine": "121"
     },
     "folds": "",
-    "lastKnownWriteTime": 1626179243,
+    "lastKnownWriteTime": 1626180276,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1626179243452,
+    "last_content_update": 1626180276901,
     "read_only": false,
     "read_only_alternatives": []
 }

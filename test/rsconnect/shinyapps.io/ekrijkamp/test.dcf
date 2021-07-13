@@ -5,9 +5,10 @@ account: ekrijkamp
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4376753
-bundleId: 4811231
+bundleId: 4814862
 url: https://ekrijkamp.shinyapps.io/test/
-when: 1626097077.17273
-lastSyncTime: 1626097077.17274
+when: 1626179862.23853
+lastSyncTime: 1626179862.23854
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: www/Comfortaa-VariableFont_wght.ttf|www/Poppins-ExtraLight.ttf|www/Poppins-ExtraLightItalic.ttf
