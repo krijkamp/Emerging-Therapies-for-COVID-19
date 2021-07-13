@@ -375,22 +375,6 @@ server <- function(input, output) {
                                                                               each = length(v_output)), sep = " "))))
      
       
-      
-      
-       # Get number of cores
-      os <- get_os()
-      no_cores <- parallel::detectCores() - 3
-    
-
-      # ## Run parallelized PSA based on OS
-      if(os == "macosx"){
-        # Initialize cluster object
-        cl <- parallel::makeForkCluster(no_cores)
-        # Register clusters
-        doParallel::registerDoParallel(cl)
-        # Run parallelized PSA
-        
-        
         # Parameters with a distribution - sample fist 
           v_c_trt <- runif(n = input$n_iter, 
                            min =  input$ci_c_Trt[1], 
@@ -409,9 +393,8 @@ server <- function(input, output) {
         
         
 
-        
-        
-        df_ce <- foreach::foreach(g = 1:input$n_iter, .combine = rbind) %dopar% {
+        for (g in 1:input$n_iter){
+    
           
           l_param_psa <- as.list(m_Parameters[g, ])
           l_param_psa <- c(l_param_psa, l_input_general) # Combine with the general input
@@ -426,91 +409,26 @@ server <- function(input, output) {
                      l_out_temp$NMB,
                      l_out_temp$NHB)
           
-        }
+        
         
         # Save the output
-        m_output_par[, "Costs notrt"]   <- df_ce[, 1]
-        m_output_par[, "Costs trt"]     <- df_ce[, 2]
+        m_output_par[g, "Costs notrt"]   <- df_ce[ 1]
+        m_output_par[g, "Costs trt"]     <- df_ce[ 2]
         
-        m_output_par[, "QALY notrt"]    <- df_ce[, 3]
-        m_output_par[, "QALY trt"]      <- df_ce[, 4]
+        m_output_par[g, "QALY notrt"]    <- df_ce[ 3]
+        m_output_par[g, "QALY trt"]      <- df_ce[ 4]
         
-        m_output_par[, "LY notrt"]      <- df_ce[, 5]
-        m_output_par[, "LY trt"]        <- df_ce[, 6]
-        
-        # Add storing the values of each iterations 
-        m_C_psa[, "notrt"] <- m_output_par[, "Costs notrt"]
-        m_C_psa[, "trt"]   <- m_output_par[, "Costs trt"]
-        
-        m_E_psa[, "notrt"] <- m_output_par[, "QALY notrt"]
-        m_E_psa[, "trt"]   <- m_output_par[, "QALY trt"]
-      }
-      
-      ## When a Linux
-      if(os == "Linux"){
-        # Initialize cluster object
-        cl <- parallel::makeCluster(no_cores)
-        # Register clusters
-        doParallel::registerDoMC(cl)
-        # Run parallelized PSA
-        
-        
-        # Parameters with a distribution - sample fist 
-        v_c_trt <- runif(n = input$n_iter, 
-                         min =  input$ci_c_Trt[1], 
-                         max = input$ci_c_Trt[2])
-        
-        # Replace baseline items in a list
-        m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1
-        m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1
-        m_Parameters[, "c_Trt_private"]            <- v_c_trt
-        m_Parameters[, "c_Trt_public"]             <- v_c_trt
-        m_Parameters[, "n_Trt"]                    <- input$n_Trt
-        m_Parameters[, "LOS_Trt"]                  <- input$LOS_Trt
-        m_Parameters[, "LOS_noTrt"]                <- input$LOS_noTrt
-        m_Parameters[, "d_c"]                      <- input$r_discount/100
-        m_Parameters[, "d_e"]                      <- input$r_discount/100
-        
-        
-        
-        
-        
-        df_ce <- foreach::foreach(g = 1:input$n_iter, .combine = rbind) %dopar% {
-          
-          l_param_psa <- as.list(m_Parameters[g, ])
-          l_param_psa <- c(l_param_psa, l_input_general) # Combine with the general input
-          
-          
-          # Run the model
-          l_out_temp <- calculate_cea_output_VOI_COVID(l_param_psa, n_wtp = l_param_psa$wtp, verbose = FALSE)
-          
-          df_ce <- c(l_out_temp$Cost, 
-                     l_out_temp$Effect, 
-                     l_out_temp$LY,
-                     l_out_temp$NMB,
-                     l_out_temp$NHB)
-          
-        }
-        
-        # Save the output
-        m_output_par[, "Costs notrt"]   <- df_ce[, 1]
-        m_output_par[, "Costs trt"]     <- df_ce[, 2]
-        
-        m_output_par[, "QALY notrt"]    <- df_ce[, 3]
-        m_output_par[, "QALY trt"]      <- df_ce[, 4]
-        
-        m_output_par[, "LY notrt"]      <- df_ce[, 5]
-        m_output_par[, "LY trt"]        <- df_ce[, 6]
+        m_output_par[g, "LY notrt"]      <- df_ce[ 5]
+        m_output_par[g, "LY trt"]        <- df_ce[ 6]
         
         # Add storing the values of each iterations 
-        m_C_psa[, "notrt"] <- m_output_par[, "Costs notrt"]
-        m_C_psa[, "trt"]   <- m_output_par[, "Costs trt"]
+        m_C_psa[g, "notrt"] <- m_output_par[g, "Costs notrt"]
+        m_C_psa[g, "trt"]   <- m_output_par[g, "Costs trt"]
         
-        m_E_psa[, "notrt"] <- m_output_par[, "QALY notrt"]
-        m_E_psa[, "trt"]   <- m_output_par[, "QALY trt"]
+        m_E_psa[g, "notrt"] <- m_output_par[g, "QALY notrt"]
+        m_E_psa[g, "trt"]   <- m_output_par[g, "QALY trt"]
       }
-      
-      stopCluster(cl)
+    
       
   })
     
