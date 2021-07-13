@@ -1,0 +1,26 @@
+{
+    "id": "90F486EB",
+    "path": "~/Documents/GitHub/Emerging-Therapies-for-COVID-19/test/app.R",
+    "project_path": "test/app.R",
+    "type": "r_source",
+    "hash": "2126362449",
+    "contents": "",
+    "dirty": false,
+    "created": 1626177613385.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "123,21",
+        "scrollLine": "114"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1626179243,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1626179243452,
+    "read_only": false,
+    "read_only_alternatives": []
+}
