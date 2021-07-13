@@ -1,0 +1,28 @@
+{
+    "id": "B8ED8C08",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1626168294327.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "id": "55751216b0bc404b91ede32ed0c83bad",
+        "name": "l_m_Parameters",
+        "title": "l_m_Parameters",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1626163937,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1626168294327,
+    "read_only": false,
+    "read_only_alternatives": []
+}
