@@ -9,6 +9,8 @@
 
 
 # Load the packages 
+
+library(shiny)
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
@@ -16,20 +18,11 @@ library(shinyjs)
 library(lubridate)
 library(rsconnect)
 library(shinyBS)
-
-#if (!require('pacman')) install.packages('pacman'); library(pacman) 
-
-
-
-
-
-
-# use this package to conveniently install other packages
 library(matrixStats)
 library(ggplot2)
 library(scales)
 library(reshape2)
-library(nlme) 
+library(nlme)
 library(mgcv)
 library(BCEA)
 library(inlabru)
@@ -38,7 +31,6 @@ library(tibble)
 library(tidyverse)
 library(ggpubr)
 library(rms)
-library(europepmc)
 library(Rmisc)
 library(fmsb)
 library(remotes)
@@ -52,6 +44,7 @@ library(meta)
 library(metafor)
 library(gridExtra)
 library(here)
+library(dplyr)
 library(ellipse)
 library(ggplot2)
 library(lazyeval)
@@ -59,35 +52,14 @@ library(igraph)
 library(ggraph)
 library(knitr)
 library(plyr)
-library(dplyr)
 library(stats)
 library(diagram)
-library(triangle)
-library(HMDHFDplus)
 library(blscrapeR)
-library(here)
-library(gridExtra)
 library(foreach)
 library(mondate)
-library(parallel)
-
-
-if (!require("remotes"))
- install.packages("remotes")
-remotes::install_github("DARTH-git/darthpack")
-remotes::install_github("DARTH-git/darthtools")
 library(dampack)
-library(darthtools)
 
-#p_load_gh("DARTH-git/dampack") # coding framework to construct model-based cost-effectiveness analysis in R
-#p_load_gh("DARTH-git/darthpack") # package for analyzing and visualizing the health economic outputs of mathematical models
-#p_load_gh("DARTH-git/darthtools") # a R package that contains tools frequently used by the DARTH workgroup
-
-
-#if (!require("remotes"))
-#  install.packages("remotes")
-#remotes::install_github("jcrodriguez1989/shinyParallel")
-#library("shinyParallel")
+library(darthtools) # a R package that contains tools frequently used by the DARTH workgroup
 
 rm(list=ls())
 
@@ -474,69 +446,7 @@ server <- function(input, output) {
         m_E_psa[, "trt"]   <- m_output_par[, "QALY trt"]
       }
       
-      ## When a Linux
-      if(os == "Linux"){
-        # Initialize cluster object
-        cl <- parallel::makeCluster(no_cores)
-        # Register clusters
-        doParallel::registerDoMC(cl)
-        # Run parallelized PSA
-        
-        
-        # Parameters with a distribution - sample fist 
-        v_c_trt <- runif(n = input$n_iter, 
-                         min =  input$ci_c_Trt[1], 
-                         max = input$ci_c_Trt[2])
-        
-        # Replace baseline items in a list
-        m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1
-        m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1
-        m_Parameters[, "c_Trt_private"]            <- v_c_trt
-        m_Parameters[, "c_Trt_public"]             <- v_c_trt
-        m_Parameters[, "n_Trt"]                    <- input$n_Trt
-        m_Parameters[, "LOS_Trt"]                  <- input$LOS_Trt
-        m_Parameters[, "LOS_noTrt"]                <- input$LOS_noTrt
-        m_Parameters[, "d_c"]                      <- input$r_discount/100
-        m_Parameters[, "d_e"]                      <- input$r_discount/100
-        
-        
-        
-        
-        
-        df_ce <- foreach::foreach(g = 1:input$n_iter, .combine = rbind) %dopar% {
-          
-          l_param_psa <- as.list(m_Parameters[g, ])
-          l_param_psa <- c(l_param_psa, l_input_general) # Combine with the general input
-          
-          
-          # Run the model
-          l_out_temp <- calculate_cea_output_VOI_COVID(l_param_psa, n_wtp = l_param_psa$wtp, verbose = FALSE)
-          
-          df_ce <- c(l_out_temp$Cost, 
-                     l_out_temp$Effect, 
-                     l_out_temp$LY,
-                     l_out_temp$NMB,
-                     l_out_temp$NHB)
-          
-        }
-        
-        # Save the output
-        m_output_par[, "Costs notrt"]   <- df_ce[, 1]
-        m_output_par[, "Costs trt"]     <- df_ce[, 2]
-        
-        m_output_par[, "QALY notrt"]    <- df_ce[, 3]
-        m_output_par[, "QALY trt"]      <- df_ce[, 4]
-        
-        m_output_par[, "LY notrt"]      <- df_ce[, 5]
-        m_output_par[, "LY trt"]        <- df_ce[, 6]
-        
-        # Add storing the values of each iterations 
-        m_C_psa[, "notrt"] <- m_output_par[, "Costs notrt"]
-        m_C_psa[, "trt"]   <- m_output_par[, "Costs trt"]
-        
-        m_E_psa[, "notrt"] <- m_output_par[, "QALY notrt"]
-        m_E_psa[, "trt"]   <- m_output_par[, "QALY trt"]
-      }
+
       
       stopCluster(cl)
       

@@ -9,6 +9,8 @@
 
 
 # Load the packages 
+
+library(shiny)
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
@@ -16,20 +18,11 @@ library(shinyjs)
 library(lubridate)
 library(rsconnect)
 library(shinyBS)
-
-#if (!require('pacman')) install.packages('pacman'); library(pacman) 
-
-
-
-
-
-
-# use this package to conveniently install other packages
 library(matrixStats)
 library(ggplot2)
 library(scales)
 library(reshape2)
-library(nlme) 
+library(nlme)
 library(mgcv)
 library(BCEA)
 library(inlabru)
@@ -38,7 +31,6 @@ library(tibble)
 library(tidyverse)
 library(ggpubr)
 library(rms)
-library(europepmc)
 library(Rmisc)
 library(fmsb)
 library(remotes)
@@ -52,6 +44,7 @@ library(meta)
 library(metafor)
 library(gridExtra)
 library(here)
+library(dplyr)
 library(ellipse)
 library(ggplot2)
 library(lazyeval)
@@ -59,35 +52,14 @@ library(igraph)
 library(ggraph)
 library(knitr)
 library(plyr)
-library(dplyr)
 library(stats)
 library(diagram)
-library(triangle)
-library(HMDHFDplus)
 library(blscrapeR)
-library(here)
-library(gridExtra)
 library(foreach)
 library(mondate)
-library(parallel)
-
-
-if (!require("remotes"))
- install.packages("remotes")
-remotes::install_github("DARTH-git/darthpack")
-remotes::install_github("DARTH-git/darthtools")
 library(dampack)
-library(darthtools)
 
-#p_load_gh("DARTH-git/dampack") # coding framework to construct model-based cost-effectiveness analysis in R
-#p_load_gh("DARTH-git/darthpack") # package for analyzing and visualizing the health economic outputs of mathematical models
-#p_load_gh("DARTH-git/darthtools") # a R package that contains tools frequently used by the DARTH workgroup
-
-
-#if (!require("remotes"))
-#  install.packages("remotes")
-#remotes::install_github("jcrodriguez1989/shinyParallel")
-#library("shinyParallel")
+library(darthtools) # a R package that contains tools frequently used by the DARTH workgroup
 
 rm(list=ls())
 
