@@ -15,16 +15,16 @@ Documentation4   <- h4("95%-CI hazard rate ratio")
 Documentation4_1 <- p("This is the 95%-confidence interval of the hazard rate ratio of the treatment effect (treatment vs control). These parameter values are used in the sensitivity analysis of the model to incorporate the uncertainty around the estimated HRR based on the current treatment effect from a trial or meta-analysis of trials.")
 
 Documentation5   <- h4("Cost therapy per dose")
-Documentation5_1 <- p("The mean expected costs of a dose of the drug in US dollar. Please note, users might like to calculate the mean price of the drug based on the % of users having a private vs a public insurance. In our simulations we estimate the mean drug costs using data suggesting that 66,2% of the patient is privately insured.(source: https://www.census.gov/library/publications/2019/demo/p60-267.html.) ")
+Documentation5_1 <- p("The mean expected costs of a dose of the drug in US dollar. Please note, users might like to calculate the mean price of the drug based on the % of users having a private vs a public insurance. In our simulations we estimate the mean drug costs using data suggesting that 66,2% of the patient is privately insured. (source: https://www.census.gov/library/publications/2019/demo/p60-267.html.) ")
 
 Documentation6   <- h4("Number of doses per patient")
 Documentation6_1 <- p("Mean expected number of required vials, estimated as total used over period of 6 days")
 
 Documentation7   <- h4("Length of stay with therapy")
-Documentation7_1 <-p("Mean length of stay in the hospital in days for a patient under treatment. This parameter is used to estimate the utility and cost of patients in the hospital.")
+Documentation7_1 <-p("Mean length of stay in the hospital in days for a patient under treatment. This parameter is used to estimate the utility and cost of patients in the hospital. The maximum length of stay in the hospital is 73 days. This hospitalization period is modeled in the first cycle of the model. ")
 .
 Documentation8   <- h4("Length of stay without therapy")
-Documentation8_1 <-p("Mean length of stay in the hospital in days for a COVID patient under usual care. This parameter is used to estimate the utility and cost of patients in the hospital.")
+Documentation8_1 <-p("Mean length of stay in the hospital in days for a COVID patient under usual care. This parameter is used to estimate the utility and cost of patients in the hospital. The maximum length of stay in the hospital is 73 days. This hospitalization period is modeled in the first cycle of the model.")
 
 Documentation9<- h2("Model Inputs")
 
@@ -77,7 +77,8 @@ DocumentationDisclaimer6 = p("You assume full responsibility for using the infor
 DocumentationAck1 = h3("Acknowledgment")
 DocumentationAck2 = h4("The authors would like to thank the Society for Medical Decision Making COVID-19 Decision and the Gordon and Betty Moore Foundation for their support through the COVID-19 Decision Modeling Initiative")
 
-DocumentationAck3 = p("We like to thank the DARTH workgroup for providing the foundations for our R code and Shiny structure template.")
+DocumentationAck3 = p("We like to thank the DARTH workgroup for providing the foundations for our R code and Shiny structure template. And a special thanks goes to Merlijn Mac Gillavry for helping out with the technical issue around placing Shiny on the server. ")
+
 
 
 

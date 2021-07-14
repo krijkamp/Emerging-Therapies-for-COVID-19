@@ -28,3 +28,8 @@ n_age_max <- 120       # max. age for life time horizon analysis
 n_DpC     <- 73        # days per cycle
 n_DpY     <- 365       # days per year
 d_c       <- 0.03      # discount rate 
+
+u_H    <- 0.5
+u_I    <- 0.05
+u_R_H  <- 0.88
+u_R_IC <- 0.677

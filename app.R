@@ -11,7 +11,7 @@
 # Load the packages 
 
 library(shiny)
-library(shiny)
+library(shinybusy)
 library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
@@ -80,11 +80,12 @@ jscode <- "shinyjs.refresh = function() { history.go(0); }"
 
 # Define UI for application that draws a histogram
 ui <- function(req) {
-  Lang = "EN"
-  source(paste0("layout ", Lang, ".R"), local= T)
-  source(paste0("values ", Lang, ".R"), local= T)
-  source(paste0("documentation ", Lang, ".R"), local= T)
+  source(paste0("layout EN.R"), local= T)
+  source(paste0("values EN.R"), local= T)
+  source(paste0("documentation EN.R"), local= T)
   #source("documentation.R") #@EK changed for language hope that works
+  
+
   
 fluidPage(
     tags$head(
@@ -95,7 +96,7 @@ fluidPage(
     withMathJax(),
           
 
-          h1(paste(title, lng, sep =", "), .noWs ="outside"),
+          h1(paste(title, sep =", "), .noWs ="outside"),
                 
                 # Application title
                 Credits2,
@@ -123,7 +124,7 @@ fluidPage(
                                          sliderInput("Uncertainty around effect size",
                                                      Slider1_1,
                                                      min = 0,
-                                                     max = 2,
+                                                     max = 3,
                                                      value = c(ci_eff_size),
                                                      step = 0.001),
                                          Tab1_3,
@@ -151,17 +152,26 @@ fluidPage(
                                          sliderInput("LOS_Trt",
                                                      Slider3,
                                                      min = 0,
-                                                     max = 100,
+                                                     max = 73,
                                                      value = LOS_Trt,
                                                      step = 1),
                                          
                                          sliderInput("LOS_noTrt",
                                                      Slider4,
                                                      min = 0,
-                                                     max = 100,
+                                                     max = 73,
                                                      value = LOS_noTrt,
-                                                     step = 1)
+                                                     step = 1),
+                                         Tab_instr1_1,
+                                         
+                                         sliderInput("p_IC",
+                                                     Slider4_1,
+                                                     min = 0,
+                                                     max = 1,
+                                                     value = 0.165,
+                                                     step = 0.01)
                                 ),
+                                
                                 tabPanel(title = Tab0_1,
                                          Tab_instr2,
                                          sliderInput("r_discount",
@@ -182,21 +192,54 @@ fluidPage(
                                          sliderInput("n_iter",
                                                      Slider6,
                                                      min = 0,
-                                                     max = 10000,
+                                                     max = 1e4,
                                                      value = n_iter,
                                                      step = 50)
                                          
                                 ),
+                                tabPanel(titl = Tab0_1_1,
+                                         sliderInput("u_H",
+                                                     "Being hospitalized",
+                                                     min = 0,
+                                                     max = 1, 
+                                                     value = u_H,
+                                                     step = 0.01),
+                                         
+                                         sliderInput("u_I",
+                                                     "Being in the intensive care unit",
+                                                     min = 0,
+                                                     max = 1, 
+                                                     value = u_I,
+                                                     step = 0.01),
+                                         
+                                         sliderInput("u_R_H",
+                                                     "After recovery from hospitalization",
+                                                     min = 0,
+                                                     max = 1, 
+                                                     value = u_R_H,
+                                                     step = 0.01),
+                                         
+                                         sliderInput("u_R_IC",
+                                                     "After recovery from the ICU",
+                                                     min = 0,
+                                                     max = 1, 
+                                                     value = u_R_IC,
+                                                     step = 0.01),
+                                         Tab_instr3.1,
+                                         ), 
+                                
                                 tabPanel(title = Tab0_2,
                                          Tab_instr4,
 
                                          numericInput(inputId = "n_H_current",
                                                       label = Population1,
                                                       value = n_H_current),
+                                         Population1_1,
                                          
                                          numericInput(inputId = "n_H_future",
                                                       label = Population0,
                                                       value = n_H_future),
+                                         Population0_1,
                                          
                                          actionButton("RunVOI", "Run VOI")
 
@@ -205,7 +248,7 @@ fluidPage(
                                 
                     ),
                     
-                    actionButton("RunPSA", "Run PSA")
+                    actionButton("RunPA", "Run PA")
                     ),
                mainPanel (
                  
@@ -317,8 +360,13 @@ server <- function(input, output) {
     l_param$n_Trt                    <- input$n_Trt
     l_param$LOS_Trt                  <- input$LOS_Trt
     l_param$LOS_noTrt                <- input$LOS_noTrt 
+    l_param$p_IC                     <- input$p_IC
     l_param$d_c                      <- input$r_discount/100
     l_param$d_e                      <- input$r_discount/100
+    l_param$u_H                      <- input$u_H
+    l_param$u_I                      <- input$u_I
+    l_param$u_R_H                    <- input$u_R_H
+    l_param$u_R_IC                   <- input$u_R_IC
     
     df_ce   <- calculate_cea_output_VOI_COVID(l_param, 
                                             n_wtp = input$n_wtp)
@@ -335,8 +383,13 @@ server <- function(input, output) {
     l_param$n_Trt                    <- input$n_Trt
     l_param$LOS_Trt                  <- input$LOS_Trt
     l_param$LOS_noTrt                <- input$LOS_noTrt
+    l_param$p_IC                     <- input$p_IC
     l_param$d_c                      <- input$r_discount/100
     l_param$d_e                      <- input$r_discount/100
+    l_param$u_H                      <- input$u_H
+    l_param$u_I                      <- input$u_I
+    l_param$u_R_H                    <- input$u_R_H
+    l_param$u_R_IC                   <- input$u_R_IC
     
     df_ce <- calculate_cea_output_VOI_COVID(l_param, 
                                             n_wtp = input$n_wtp)
@@ -353,10 +406,11 @@ server <- function(input, output) {
   
 
   
-  observeEvent(input$RunPSA, {  #
+  observeEvent(input$RunPA, {  #
     # add all the action that are needed before the model needs to start running
     
-    withProgress(message = 'Performing probabilistic sensitivity analysis', value = 0, {
+    withProgress(message = 'Performing probabilistic analysis', 
+                 detail = "After the PA, making the figures takes some time as well", value = 0, {
       
       # select the treatment of interest
       m_Parameters <<- l_m_Parameters_shiny$Dexamethasone[1:input$n_iter, ]
@@ -389,12 +443,14 @@ server <- function(input, output) {
         m_Parameters[, "n_Trt"]                    <- input$n_Trt
         m_Parameters[, "LOS_Trt"]                  <- input$LOS_Trt
         m_Parameters[, "LOS_noTrt"]                <- input$LOS_noTrt
+        m_Parameters[, "p_IC"]                     <- input$p_IC
         m_Parameters[, "d_c"]                      <- input$r_discount/100
         m_Parameters[, "d_e"]                      <- input$r_discount/100
         
         
 
         for (g in 1:input$n_iter){
+         
     
           
           l_param_psa <- as.list(m_Parameters[g, ])
@@ -428,6 +484,8 @@ server <- function(input, output) {
         
         m_E_psa[g, "notrt"] <- m_output_par[g, "QALY notrt"]
         m_E_psa[g, "trt"]   <- m_output_par[g, "QALY trt"]
+        
+        incProgress(g*0.75/input$n_iter) # Update the progress bar
       }
     
       
@@ -435,12 +493,15 @@ server <- function(input, output) {
     
     # Do the CEA calculation 
     output$df_CEA_PSA <- renderTable({
+
+      
       df_cea_QALY_PSA <- calculate_icers(cost   =     colMeans(m_C_psa),
                                          effect     = colMeans(m_E_psa),
                                          strategies = l_out_temp$Strategy)
       df_cea_QALY_PSA
       
       df_cea_QALY_PSA %>% arrange(desc(Strategy))  # Have trt first row
+
     })
     
     output$plot_CE_PSA <- renderPlot({
@@ -458,7 +519,7 @@ server <- function(input, output) {
         geom_hline(yintercept = 0, color = my_darkgray, size = 0.6) +
         scale_color_manual(values = c(my_lightred, my_green, my_black)) + 
         scale_fill_manual(values = c(my_lightred, my_green, my_black))
-      
+
       
     })
     
