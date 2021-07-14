@@ -1,0 +1,14 @@
+name: test
+title:
+username:
+account: ekrijkamp
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4376753
+bundleId: 4815208
+url: https://ekrijkamp.shinyapps.io/test/
+when: 1626184935.90542
+lastSyncTime: 1626184935.90543
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: app.R

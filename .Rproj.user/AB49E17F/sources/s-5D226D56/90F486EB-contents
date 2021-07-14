@@ -120,6 +120,7 @@ server <- function(input, output) {
     })
     
     output$textParallel <- renderPlot({
+        #browser()
         # Generate data
         data <- 1:1e2
         data_list <- list("1" = data,
