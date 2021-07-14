@@ -485,7 +485,8 @@ server <- function(input, output) {
         m_E_psa[g, "notrt"] <- m_output_par[g, "QALY notrt"]
         m_E_psa[g, "trt"]   <- m_output_par[g, "QALY trt"]
         
-        incProgress(g*0.75/input$n_iter) # Update the progress bar
+        incProgress(g/input$n_iter) # Update the progress bar
+        Sys.sleep(0.1)
       }
     
       
