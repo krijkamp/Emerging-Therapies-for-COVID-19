@@ -115,7 +115,7 @@ fluidPage(
                                 tabPanel(title = Tab0_0,
                                          Tab1_1,
                                          Tab1_2,
-                                         numericInput("hr_D_Trt_timespan1", 
+                                         numericInput("hr_D_Trt_timespan1_novent", 
                                                       Slider1, 
                                                       value = n_eff_size,
                                                       step = 0.001,
@@ -126,6 +126,19 @@ fluidPage(
                                                      min = 0,
                                                      max = 3,
                                                      value = c(ci_eff_size),
+                                                     step = 0.001),
+                                         Tab1_2_1,
+                                         numericInput("hr_D_Trt_timespan1_vent", 
+                                                      Slider1_2, 
+                                                      value = n_eff_size_vent,
+                                                      step = 0.001,
+                                                      min = 0),
+                                         
+                                         sliderInput("Uncertainty around effect size",
+                                                     Slider1_3,
+                                                     min = 0,
+                                                     max = 3,
+                                                     value = c(ci_eff_size_vent),
                                                      step = 0.001),
                                          Tab1_3,
                                          
@@ -353,8 +366,8 @@ server <- function(input, output) {
   # run the basecase function
   output$df_basecase <- renderTable({
     #update the values 
-    l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1
-    l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1
+    l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1_novent
+    l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1_vent
     l_param$c_Trt_private            <- input$c_Trt
     l_param$c_Trt_public             <- input$c_Trt
     l_param$n_Trt                    <- input$n_Trt
@@ -376,8 +389,8 @@ server <- function(input, output) {
   
   # run the calculate ICER function
   output$df_CEA_basecase<- renderTable({
-    l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1
-    l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1
+    l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1_novent
+    l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1_vent
     l_param$c_Trt_private            <- input$c_Trt
     l_param$c_Trt_public             <- input$c_Trt
     l_param$n_Trt                    <- input$n_Trt
@@ -436,8 +449,8 @@ server <- function(input, output) {
                            max =  input$ci_c_Trt[2])
         
         # Replace baseline items in a list
-        m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1
-        m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1
+        m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1_novent
+        m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1_vent
         m_Parameters[, "c_Trt_private"]            <- v_c_trt
         m_Parameters[, "c_Trt_public"]             <- v_c_trt
         m_Parameters[, "n_Trt"]                    <- input$n_Trt
