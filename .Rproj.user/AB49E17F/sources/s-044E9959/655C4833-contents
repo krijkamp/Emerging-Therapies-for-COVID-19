@@ -11,7 +11,6 @@
 # Load the packages 
 
 library(shiny)
-library(shinybusy)
 library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
@@ -119,7 +118,8 @@ fluidPage(
                                          numericInput("hr_D_Trt_timespan1", 
                                                       Slider1, 
                                                       value = n_eff_size,
-                                                      step = 0.001),
+                                                      step = 0.001,
+                                                      min = 0),
                                          
                                          sliderInput("Uncertainty around effect size",
                                                      Slider1_1,
@@ -485,8 +485,11 @@ server <- function(input, output) {
         m_E_psa[g, "notrt"] <- m_output_par[g, "QALY notrt"]
         m_E_psa[g, "trt"]   <- m_output_par[g, "QALY trt"]
         
-        incProgress(g/input$n_iter) # Update the progress bar
-        Sys.sleep(0.1)
+     
+        incProgress(amount = 1/input$n_iter) # Update the progress bar   
+        Sys.sleep(0.25)  # pretending to execute code
+        
+      
       }
     
       
