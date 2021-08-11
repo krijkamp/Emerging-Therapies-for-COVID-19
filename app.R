@@ -235,10 +235,12 @@ fluidPage(
                                                      value = u_I,
                                                      step = 0.01),
                                          
-                                         numericInput("sd_u_H",
-                                                      "Standard deviatie",
-                                                      value = 0.5,
-                                                      step = 0.01),
+                                         sliderInput("ci_u_I",
+                                                     "min and max",
+                                                     min = 0,
+                                                     max = 1,
+                                                     value = c(ci_u_I),
+                                                     step = 0.01),
                                          
                                          h3("Beta distributions"),
                                          h4("After recovery from hospitalization"),
@@ -476,6 +478,26 @@ server <- function(input, output) {
           v_c_trt <- runif(n = input$n_iter, 
                            min =  input$ci_c_Trt[1], 
                            max =  input$ci_c_Trt[2])
+          
+          # Utility values 
+          v_u_H    <- rtriangle(n = input$n_iter,
+                                a = input$ci_u_H[1],
+                                b = input$ci_u_H[2],
+                                c = input$u_H)
+          
+          v_u_IC    <- rtriangle(n = input$n_iter,
+                                 a = input$ci_u_I[1],
+                                 b = input$ci_u_I[2],
+                                 c = input$u_I)
+          
+          v_u_R_H  <- rbeta(n = input$n_iter,
+                            shape1 = beta_params(input$u_R_H, input$sd_u_R_H)$alpha,
+                            shape2 = beta_params(input$u_R_H, input$sd_u_R_H)$beta)
+         
+          v_u_R_IC <- rbeta(n = input$n_iter,
+                             shape1 = beta_params(input$u_R_IC, input$sd_u_R_IC)$alpha,
+                             shape2 = beta_params(input$u_R_IC, input$sd_u_R_IC)$beta)
+          
         
         # Replace baseline items in a list
         m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1_novent
@@ -488,6 +510,10 @@ server <- function(input, output) {
         m_Parameters[, "p_IC"]                     <- input$p_IC
         m_Parameters[, "d_c"]                      <- input$r_discount/100
         m_Parameters[, "d_e"]                      <- input$r_discount/100
+        m_Patameters[, "u_H"]                      <- v_u_H
+        m_Patameters[, "u_I"]                      <- v_u_I
+        m_Patameters[, "u_R_H"]                    <- v_u_R_H
+        m_Patameters[, "u_R_IC"]                   <- v_R_IC
         
         
 
