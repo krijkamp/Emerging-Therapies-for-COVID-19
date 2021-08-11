@@ -580,7 +580,7 @@ server <- function(input, output) {
       
       plot_CE_PSA <- make_psa_obj(cost  = as.data.frame(m_C_psa), 
                                   effectiveness  = as.data.frame(m_E_psa),
-                                  parameters =m_Parameters[1:input$n_iter, ],
+                                  parameters = m_Parameters[1:input$n_iter, ],
                                   strategies = l_out_temp$Strategy)
       plot(plot_CE_PSA) + 
         labs(title     = paste("Cost-effectiveness plane"), 
