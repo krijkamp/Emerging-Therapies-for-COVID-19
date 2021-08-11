@@ -212,6 +212,8 @@ fluidPage(
                                 ),
                                 tabPanel(titl = Tab0_1_1,
                                          h3("Triangular distributions"),
+                                         h5("Make sure the mean fits in the CI range"),
+                                         
                                          h4("Being hospitalized "),
                                          sliderInput("u_H",
                                                      "Mean ",
@@ -221,7 +223,7 @@ fluidPage(
                                                      step = 0.01),
                                          
                                          sliderInput("ci_u_H",
-                                                     "min and max",
+                                                     "upper and lower limit",
                                                      min = 0,
                                                      max = 1,
                                                      value = c(ci_u_H),
@@ -236,7 +238,7 @@ fluidPage(
                                                      step = 0.01),
                                          
                                          sliderInput("ci_u_I",
-                                                     "min and max",
+                                                     "upper and lower limit",
                                                      min = 0,
                                                      max = 1,
                                                      value = c(ci_u_I),
@@ -485,7 +487,7 @@ server <- function(input, output) {
                                 b = input$ci_u_H[2],
                                 c = input$u_H)
           
-          v_u_IC    <- rtriangle(n = input$n_iter,
+          v_u_I     <- rtriangle(n = input$n_iter,
                                  a = input$ci_u_I[1],
                                  b = input$ci_u_I[2],
                                  c = input$u_I)
@@ -510,10 +512,10 @@ server <- function(input, output) {
         m_Parameters[, "p_IC"]                     <- input$p_IC
         m_Parameters[, "d_c"]                      <- input$r_discount/100
         m_Parameters[, "d_e"]                      <- input$r_discount/100
-        m_Patameters[, "u_H"]                      <- v_u_H
-        m_Patameters[, "u_I"]                      <- v_u_I
-        m_Patameters[, "u_R_H"]                    <- v_u_R_H
-        m_Patameters[, "u_R_IC"]                   <- v_R_IC
+        m_Parameters[, "u_H"]                      <- v_u_H
+        m_Parameters[, "u_I"]                      <- v_u_I
+        m_Parameters[, "u_R_H"]                    <- v_u_R_H
+        m_Parameters[, "u_R_IC"]                   <- v_u_R_IC
         
         
 
@@ -606,15 +608,15 @@ server <- function(input, output) {
 
       # calculate population EVPI for QALY
       l_out_evpi_QALY <- evpi(v.wtp = v_wtp,
-                                    m.e   = m_E_psa, 
-                                    m.c   = m_C_psa, 
-                                    pop   = l_pop) 
+                              m.e   = m_E_psa, 
+                              m.c   = m_C_psa, 
+                              pop   = l_pop) 
       
   
       l_out_evpi_QALY$EVPI[l_out_evpi_QALY$WTP == 100000] # print QALY result for a specific WTP
       
       # store in a list
-      l_evpi_value <- cbind(WTP       = l_out_evpi$WTP, 
+      l_evpi_value <- cbind(WTP     = l_out_evpi$WTP, 
                           EVPI_LY   = l_out_evpi_LY$EVPI, 
                           EVPI_QALY = l_out_evpi_QALY$EVPI) 
     }) 
