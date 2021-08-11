@@ -18,7 +18,7 @@ LOS_Trt      <- 12            # Length of stay with the therapy
 LOS_noTrt    <- 13            # Length of stay without the therapy
 
 r_discount   <- 3             # the discount rate
-n_iter       <- 100            # then number of PSA iteration 
+n_iter       <- 100           # then number of PSA iteration 
 
 n_wtp        <- 100000        # the willingness-to-pay in $/QALY
 n_H_future   <- 88000         # the future number of hospitalized patients 
@@ -32,10 +32,15 @@ n_DpY     <- 365       # days per year
 d_c       <- 0.03      # discount rate 
 
 u_H       <- 0.5       #0,500	0,25	0,88
-u_I       <- 0.05      #0,050	0	0,25
-u_R_H     <- 0.88      #0,880	0,877	0,883
-u_R_IC    <- 0.677     #0,677	0,4565801	0,9569805
+ci_u_H    <- c(0.25	, 0.88)  
 
+u_I       <- 0.05      #0,050	0	0,25
+ci_u_I    <- c(0, 0.25)
+
+u_R_H     <- 0.88      #0,880	0,877	0,883
+sd_u_R_H  <- 0.0015
+u_R_IC    <- 0.677     #0,677	0,4565801	0,9569805
+sd_u_R_IC <- 0.301
 
 
 

@@ -1,26 +1,26 @@
 {
-    "id": "B88CB596",
+    "id": "49AEA70F",
     "path": "~/Documents/GitHub/Emerging-Therapies-for-COVID-19/values EN.R",
     "project_path": "values EN.R",
     "type": "r_source",
-    "hash": "2697830350",
+    "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1626347601810.0,
+    "created": 1628672074884.0,
     "source_on_save": false,
-    "relative_order": 3,
+    "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "36,22",
-        "scrollLine": "16"
+        "cursorPosition": "36,36",
+        "scrollLine": "17"
     },
     "folds": "",
-    "lastKnownWriteTime": 1626347936,
+    "lastKnownWriteTime": 1628673522,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1626347936443,
+    "last_content_update": 1628673522414,
     "read_only": false,
     "read_only_alternatives": []
 }
