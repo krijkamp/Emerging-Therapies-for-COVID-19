@@ -90,6 +90,7 @@ Main_Output1 =  tabPanel( title = "Results",
   p(""),
   tableOutput("df_CEA_PSA"),
   h4(strong("Expected net benefit results:")),
+  textOutput("test"),
   p("Click the [Run VOI] button to see (changes in the) VOI results. Please note that this simulation takes some time.")
   
 )

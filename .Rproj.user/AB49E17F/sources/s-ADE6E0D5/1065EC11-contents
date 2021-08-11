@@ -355,6 +355,7 @@ fluidPage(
 )
 }
 # Define server logic required to draw a histogram
+
 server <- function(input, output) {
   source("functions/00_general_mycolour.R")
   source("functions/00_functions_darthtools.R")
@@ -462,7 +463,7 @@ server <- function(input, output) {
       m_Parameters <<- l_m_Parameters_shiny$Dexamethasone[1:input$n_iter, ]
       v_output <- c("LY", "QALY", "Costs")            # Vector of output names
       n_str <- 2
-      m_C_psa <- m_E_psa <- matrix(NA, ncol = 2, nrow = input$n_iter)
+      m_C_psa <- m_E_psa <- matrix(NA, ncol = 2, nrow = input$n_iter) #with << add it to the global environment for VOI analysis
       colnames(m_C_psa) <- colnames(m_E_psa) <- c("notrt", "trt")
       
       #Initiate list
@@ -592,39 +593,46 @@ server <- function(input, output) {
         geom_vline(xintercept = 0, color = my_darkgray, size = 0.6) +
         geom_hline(yintercept = 0, color = my_darkgray, size = 0.6) +
         scale_color_manual(values = c(my_lightred, my_green, my_black)) + 
-        scale_fill_manual(values = c(my_lightred, my_green, my_black))
+        scale_fill_manual(values  = c(my_lightred, my_green, my_black))
 
       
     })
     
     
-  })
+  })  # close observe event PA
   
   observeEvent(input$RunVOI, {
     withProgress(message = 'Performing value of information analysis', value = 0, {
       
-      v_wtp <- seq(0, 3*1e5, 1e3)
-      l_pop <- input$n_H_year * mean(m_Parameters[, "p_IC_notrt"])
+      v_wtp <- seq(0, 3 * 1e5, length.out = input$n_iter)
+      l_pop <-  input$n_H_current* mean(m_Parameters[, "p_IC_notrt"])
 
       # calculate population EVPI for QALY
-      l_out_evpi_QALY <- evpi(v.wtp = v_wtp,
-                              m.e   = m_E_psa, 
-                              m.c   = m_C_psa, 
-                              pop   = l_pop) 
+     # l_out_evpi_QALY <- evpi(v.wtp = v_wtp,
+      #                        m.e   = m_E_psa, 
+       #                       m.c   = m_C_psa, 
+        #                      pop   = l_pop) 
       
   
-      l_out_evpi_QALY$EVPI[l_out_evpi_QALY$WTP == 100000] # print QALY result for a specific WTP
+     # l_out_evpi_QALY$EVPI[l_out_evpi_QALY$WTP == 100000] # print QALY result for a specific WTP
       
       # store in a list
-      l_evpi_value <- cbind(WTP     = l_out_evpi$WTP, 
-                          EVPI_LY   = l_out_evpi_LY$EVPI, 
-                          EVPI_QALY = l_out_evpi_QALY$EVPI) 
-    }) 
+     # l_evpi_value <- cbind(WTP     = l_out_evpi$WTP, 
+      #                    EVPI_LY   = l_out_evpi_LY$EVPI, 
+       #                   EVPI_QALY = l_out_evpi_QALY$EVPI) 
     
-    #output$plotVOI <- renderPlot({})  
+      })
+    
+      output$test <- renderText({
+        paste("You have selected", colMeans(m_E_psa))
+        })
   
     
-    })
+  
+    
+    
+    
+  })
   
 
   
@@ -636,7 +644,6 @@ server <- function(input, output) {
     
     # Update file 'date creation'
     Sys.setFileTime(p, now())
-    print("test")
   
   }) # onStop
 }
