@@ -561,6 +561,9 @@ server <- function(input, output) {
         Sys.sleep(0.25)  # pretending to execute code
         
       
+        # store the results in the global environment  
+        m_E_psa <<- m_E_psa
+        m_C_psa <<- m_C_psa
       }
     
       
