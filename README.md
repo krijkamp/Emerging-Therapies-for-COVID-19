@@ -18,6 +18,8 @@ The COVID-19 pandemic necessitates time-sensitive policy and implementation deci
 
 
 # Main results
+
+## WORK IN PROGRESS - WILL BE RELEASED SOON## 
 The full source code of the project can be found the folder analysis folder.
 We strongly recommend to download the entire folder and start by opening the .Rproject
 
