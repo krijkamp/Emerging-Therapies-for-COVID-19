@@ -3,7 +3,7 @@
     "path": "~/Documents/GitHub/Emerging-Therapies-for-COVID-19/layout EN.R",
     "project_path": "layout EN.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "2676762246",
     "contents": "",
     "dirty": false,
     "created": 1628672640945.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "61,21",
-        "scrollLine": "0"
+        "cursorPosition": "118,33",
+        "scrollLine": "113"
     },
     "folds": "",
-    "lastKnownWriteTime": 1628690428,
+    "lastKnownWriteTime": 1662378833,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1628690428176,
+    "last_content_update": 1662378833252,
     "read_only": false,
     "read_only_alternatives": []
 }
