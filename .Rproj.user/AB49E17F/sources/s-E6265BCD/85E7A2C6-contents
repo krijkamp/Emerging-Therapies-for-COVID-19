@@ -9,10 +9,7 @@
 
 
 # Load the packages 
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
@@ -20,7 +17,6 @@ library(shinyjs)
 library(lubridate)
 library(rsconnect)
 library(shinyBS)
-<<<<<<< Updated upstream
 library(matrixStats)
 library(ggplot2)
 library(scales)
@@ -63,33 +59,6 @@ library(mondate)
 library(dampack)
 
 library(darthtools) # a R package that contains tools frequently used by the DARTH workgroup
-=======
-if (!require('pacman')) install.packages('pacman'); library(pacman) 
-
-# use this package to conveniently install other packages
-p_load("matrixStats", "ggplot2", 
-       "scales", "reshape2",
-       "nlme", "mgcv", "BCEA", 
-       "inlabru", "devtools",
-       "tibble", "tidyverse", "ggpubr",
-       "rms", "europepmc", "Rmisc",
-       "fmsb", "remotes", "readxl", "plyr", "stats", "triangle",
-       "EnvStats", "e1071", "meta","metafor", "gridExtra", 
-       "here", "dplyr","ellipse", "ggplot2", "lazyeval", 
-       "igraph", "ggraph","knitr", "plyr", "stats", "diagram",
-       "triangle", "HMDHFDplus", "blscrapeR", "here", "gridExtra", "foreach", "mondate",  "parallel")
-
-
-p_load_gh("DARTH-git/dampack") # coding framework to construct model-based cost-effectiveness analysis in R
-#p_load_gh("DARTH-git/darthpack") # package for analyzing and visualizing the health economic outputs of mathematical models
-p_load_gh("DARTH-git/darthtools") # a R package that contains tools frequently used by the DARTH workgroup
-
-
-if (!require("remotes"))
-  install.packages("remotes")
-remotes::install_github("jcrodriguez1989/shinyParallel")
-library("shinyParallel")
->>>>>>> Stashed changes
 
 rm(list=ls())
 
@@ -110,7 +79,6 @@ jscode <- "shinyjs.refresh = function() { history.go(0); }"
 
 # Define UI for application that draws a histogram
 ui <- function(req) {
-<<<<<<< Updated upstream
   source(paste0("layout EN.R"), local= T)
   source(paste0("values EN.R"), local= T)
   source(paste0("documentation EN.R"), local= T)
@@ -118,14 +86,6 @@ ui <- function(req) {
   
 
   
-=======
-  Lang = "EN"
-  source(paste0("layout ", Lang, ".R"), local= T)
-  source(paste0("values ", Lang, ".R"), local= T)
-  source(paste0("documentation ", Lang, ".R"), local= T)
-  #source("documentation.R") #@EK changed for language hope that works
-  
->>>>>>> Stashed changes
 fluidPage(
     tags$head(
       includeCSS("www/style_EK.css")
@@ -135,11 +95,7 @@ fluidPage(
     withMathJax(),
           
 
-<<<<<<< Updated upstream
           h1(paste(title, sep =", "), .noWs ="outside"),
-=======
-          h1(paste(title, lng, sep =", "), .noWs ="outside"),
->>>>>>> Stashed changes
                 
                 # Application title
                 Credits2,
@@ -159,23 +115,15 @@ fluidPage(
                                 tabPanel(title = Tab0_0,
                                          Tab1_1,
                                          Tab1_2,
-<<<<<<< Updated upstream
                                          numericInput("hr_D_Trt_timespan1_novent", 
                                                       Slider1, 
                                                       value = n_eff_size,
                                                       step = 0.001,
                                                       min = 0),
-=======
-                                         numericInput("hr_D_Trt_timespan1", 
-                                                      Slider1, 
-                                                      value = n_eff_size,
-                                                      step = 0.001),
->>>>>>> Stashed changes
                                          
                                          sliderInput("Uncertainty around effect size",
                                                      Slider1_1,
                                                      min = 0,
-<<<<<<< Updated upstream
                                                      max = 3,
                                                      value = c(ci_eff_size),
                                                      step = 0.001),
@@ -192,11 +140,6 @@ fluidPage(
                                                      max = 3,
                                                      value = c(ci_eff_size_vent),
                                                      step = 0.001),
-=======
-                                                     max = 2,
-                                                     value = c(ci_eff_size),
-                                                     step = 0.001),
->>>>>>> Stashed changes
                                          Tab1_3,
                                          
                                          numericInput("c_Trt",
@@ -222,18 +165,13 @@ fluidPage(
                                          sliderInput("LOS_Trt",
                                                      Slider3,
                                                      min = 0,
-<<<<<<< Updated upstream
                                                      max = 73,
-=======
-                                                     max = 100,
->>>>>>> Stashed changes
                                                      value = LOS_Trt,
                                                      step = 1),
                                          
                                          sliderInput("LOS_noTrt",
                                                      Slider4,
                                                      min = 0,
-<<<<<<< Updated upstream
                                                      max = 73,
                                                      value = LOS_noTrt,
                                                      step = 1),
@@ -247,12 +185,6 @@ fluidPage(
                                                      step = 0.01)
                                 ),
                                 
-=======
-                                                     max = 100,
-                                                     value = LOS_noTrt,
-                                                     step = 1)
-                                ),
->>>>>>> Stashed changes
                                 tabPanel(title = Tab0_1,
                                          Tab_instr2,
                                          sliderInput("r_discount",
@@ -273,7 +205,6 @@ fluidPage(
                                          sliderInput("n_iter",
                                                      Slider6,
                                                      min = 0,
-<<<<<<< Updated upstream
                                                      max = 1e3,
                                                      value = n_iter,
                                                      step = 100)
@@ -343,31 +274,18 @@ fluidPage(
                                          Tab_instr3.1,
                                          ), 
                                 
-=======
-                                                     max = 10000,
-                                                     value = n_iter,
-                                                     step = 50)
-                                         
-                                ),
->>>>>>> Stashed changes
                                 tabPanel(title = Tab0_2,
                                          Tab_instr4,
 
                                          numericInput(inputId = "n_H_current",
                                                       label = Population1,
                                                       value = n_H_current),
-<<<<<<< Updated upstream
                                          Population1_1,
-=======
->>>>>>> Stashed changes
                                          
                                          numericInput(inputId = "n_H_future",
                                                       label = Population0,
                                                       value = n_H_future),
-<<<<<<< Updated upstream
                                          Population0_1,
-=======
->>>>>>> Stashed changes
                                          
                                          actionButton("RunVOI", "Run VOI")
 
@@ -376,11 +294,7 @@ fluidPage(
                                 
                     ),
                     
-<<<<<<< Updated upstream
                     actionButton("RunPA", "Run PA")
-=======
-                    actionButton("RunPSA", "Run PSA")
->>>>>>> Stashed changes
                     ),
                mainPanel (
                  
@@ -441,10 +355,7 @@ fluidPage(
 )
 }
 # Define server logic required to draw a histogram
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 server <- function(input, output) {
   source("functions/00_general_mycolour.R")
   source("functions/00_functions_darthtools.R")
@@ -453,10 +364,7 @@ server <- function(input, output) {
   source("functions/02_decision_model_functions.R") # functions for model structure & to run the model 
   source("functions/02_decision_model_plot_functions.R") # plot functions
   source("functions/02_decision_model_calcout_functions.R") # the entire model
-<<<<<<< Updated upstream
   source("functions/06_VOI_functions.R") # load VOI functions
-=======
->>>>>>> Stashed changes
   Lang <- read.csv("changes.csv")$x
   if (is.na(Lang)) Lang = "EN"
 
@@ -492,19 +400,13 @@ server <- function(input, output) {
   # run the basecase function
   output$df_basecase <- renderTable({
     #update the values 
-<<<<<<< Updated upstream
     l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1_novent
     l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1_vent
-=======
-    l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1
-    l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1
->>>>>>> Stashed changes
     l_param$c_Trt_private            <- input$c_Trt
     l_param$c_Trt_public             <- input$c_Trt
     l_param$n_Trt                    <- input$n_Trt
     l_param$LOS_Trt                  <- input$LOS_Trt
     l_param$LOS_noTrt                <- input$LOS_noTrt 
-<<<<<<< Updated upstream
     l_param$p_IC                     <- input$p_IC
     l_param$d_c                      <- input$r_discount/100
     l_param$d_e                      <- input$r_discount/100
@@ -512,10 +414,6 @@ server <- function(input, output) {
     l_param$u_I                      <- input$u_I
     l_param$u_R_H                    <- input$u_R_H
     l_param$u_R_IC                   <- input$u_R_IC
-=======
-    l_param$d_c                      <- input$r_discount/100
-    l_param$d_e                      <- input$r_discount/100
->>>>>>> Stashed changes
     
     df_ce   <- calculate_cea_output_VOI_COVID(l_param, 
                                             n_wtp = input$n_wtp)
@@ -525,19 +423,13 @@ server <- function(input, output) {
   
   # run the calculate ICER function
   output$df_CEA_basecase<- renderTable({
-<<<<<<< Updated upstream
     l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1_novent
     l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1_vent
-=======
-    l_param$hr_D_Trt_timespan1_novent<- input$hr_D_Trt_timespan1
-    l_param$hr_D_Trt_timespan1_vent  <- input$hr_D_Trt_timespan1
->>>>>>> Stashed changes
     l_param$c_Trt_private            <- input$c_Trt
     l_param$c_Trt_public             <- input$c_Trt
     l_param$n_Trt                    <- input$n_Trt
     l_param$LOS_Trt                  <- input$LOS_Trt
     l_param$LOS_noTrt                <- input$LOS_noTrt
-<<<<<<< Updated upstream
     l_param$p_IC                     <- input$p_IC
     l_param$d_c                      <- input$r_discount/100
     l_param$d_e                      <- input$r_discount/100
@@ -545,10 +437,6 @@ server <- function(input, output) {
     l_param$u_I                      <- input$u_I
     l_param$u_R_H                    <- input$u_R_H
     l_param$u_R_IC                   <- input$u_R_IC
-=======
-    l_param$d_c                      <- input$r_discount/100
-    l_param$d_e                      <- input$r_discount/100
->>>>>>> Stashed changes
     
     df_ce <- calculate_cea_output_VOI_COVID(l_param, 
                                             n_wtp = input$n_wtp)
@@ -565,7 +453,6 @@ server <- function(input, output) {
   
 
   
-<<<<<<< Updated upstream
   observeEvent(input$RunPA, {  #
     # add all the action that are needed before the model needs to start running
     
@@ -577,18 +464,6 @@ server <- function(input, output) {
       v_output <- c("LY", "QALY", "Costs")            # Vector of output names
       n_str <- 2
       m_C_psa <- m_E_psa <- matrix(NA, ncol = 2, nrow = input$n_iter) #with << add it to the global environment for VOI analysis
-=======
-  observeEvent(input$RunPSA, {  #
-    # add all the action that are needed before the model needs to start running
-    
-    withProgress(message = 'Performing probabilistic sensitivity analysis', value = 0, {
-      
-      # select the treatment of interest
-      m_Parameters <- l_m_Parameters_shiny$Dexamethasone[1:input$n_iter, ]
-      v_output <- c("LY", "QALY", "Costs")            # Vector of output names
-      n_str <- 2
-      m_C_psa <- m_E_psa <- matrix(NA, ncol = 2, nrow = input$n_iter)
->>>>>>> Stashed changes
       colnames(m_C_psa) <- colnames(m_E_psa) <- c("notrt", "trt")
       
       #Initiate list
@@ -602,7 +477,6 @@ server <- function(input, output) {
                                                                               each = length(v_output)), sep = " "))))
      
       
-<<<<<<< Updated upstream
         # Parameters with a distribution - sample fist 
           v_c_trt <- runif(n = input$n_iter, 
                            min =  input$ci_c_Trt[1], 
@@ -631,38 +505,11 @@ server <- function(input, output) {
         # Replace baseline items in a list
         m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1_novent
         m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1_vent
-=======
-      
-      
-       # Get number of cores
-      os <- get_os()
-      no_cores <- parallel::detectCores() - 3
-    
-
-      # ## Run parallelized PSA based on OS
-      if(os == "macosx"){
-        # Initialize cluster object
-        cl <- parallel::makeForkCluster(no_cores)
-        # Register clusters
-        doParallel::registerDoParallel(cl)
-        # Run parallelized PSA
-        
-        
-        # Parameters with a distribution - sample fist 
-          v_c_trt <- runif(n = input$n_iter, 
-                           min =  input$ci_c_Trt[1], 
-                           max = input$ci_c_Trt[2])
-        
-        # Replace baseline items in a list
-        m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1
-        m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1
->>>>>>> Stashed changes
         m_Parameters[, "c_Trt_private"]            <- v_c_trt
         m_Parameters[, "c_Trt_public"]             <- v_c_trt
         m_Parameters[, "n_Trt"]                    <- input$n_Trt
         m_Parameters[, "LOS_Trt"]                  <- input$LOS_Trt
         m_Parameters[, "LOS_noTrt"]                <- input$LOS_noTrt
-<<<<<<< Updated upstream
         m_Parameters[, "p_IC"]                     <- input$p_IC
         m_Parameters[, "d_c"]                      <- input$r_discount/100
         m_Parameters[, "d_e"]                      <- input$r_discount/100
@@ -676,16 +523,6 @@ server <- function(input, output) {
         for (g in 1:input$n_iter){
          
     
-=======
-        m_Parameters[, "d_c"]                      <- input$r_discount/100
-        m_Parameters[, "d_e"]                      <- input$r_discount/100
-        
-        
-
-        
-        
-        df_ce <- foreach::foreach(g = 1:input$n_iter, .combine = rbind) %dopar% {
->>>>>>> Stashed changes
           
           l_param_psa <- as.list(m_Parameters[g, ])
           l_param_psa <- c(l_param_psa, l_input_general) # Combine with the general input
@@ -700,7 +537,6 @@ server <- function(input, output) {
                      l_out_temp$NMB,
                      l_out_temp$NHB)
           
-<<<<<<< Updated upstream
         
         
         # Save the output
@@ -730,124 +566,27 @@ server <- function(input, output) {
         m_C_psa <<- m_C_psa
       }
     
-=======
-        }
-        
-        # Save the output
-        m_output_par[, "Costs notrt"]   <- df_ce[, 1]
-        m_output_par[, "Costs trt"]     <- df_ce[, 2]
-        
-        m_output_par[, "QALY notrt"]    <- df_ce[, 3]
-        m_output_par[, "QALY trt"]      <- df_ce[, 4]
-        
-        m_output_par[, "LY notrt"]      <- df_ce[, 5]
-        m_output_par[, "LY trt"]        <- df_ce[, 6]
-        
-        # Add storing the values of each iterations 
-        m_C_psa[, "notrt"] <- m_output_par[, "Costs notrt"]
-        m_C_psa[, "trt"]   <- m_output_par[, "Costs trt"]
-        
-        m_E_psa[, "notrt"] <- m_output_par[, "QALY notrt"]
-        m_E_psa[, "trt"]   <- m_output_par[, "QALY trt"]
-      }
-      
-      ## When a Linux
-      if(os == "Linux"){
-        # Initialize cluster object
-        cl <- parallel::makeCluster(no_cores)
-        # Register clusters
-        doParallel::registerDoMC(cl)
-        # Run parallelized PSA
-        
-        
-        # Parameters with a distribution - sample fist 
-        v_c_trt <- runif(n = input$n_iter, 
-                         min =  input$ci_c_Trt[1], 
-                         max = input$ci_c_Trt[2])
-        
-        # Replace baseline items in a list
-        m_Parameters[, "hr_D_Trt_timespan1_novent"]<- input$hr_D_Trt_timespan1
-        m_Parameters[, "hr_D_Trt_timespan1_vent"]  <- input$hr_D_Trt_timespan1
-        m_Parameters[, "c_Trt_private"]            <- v_c_trt
-        m_Parameters[, "c_Trt_public"]             <- v_c_trt
-        m_Parameters[, "n_Trt"]                    <- input$n_Trt
-        m_Parameters[, "LOS_Trt"]                  <- input$LOS_Trt
-        m_Parameters[, "LOS_noTrt"]                <- input$LOS_noTrt
-        m_Parameters[, "d_c"]                      <- input$r_discount/100
-        m_Parameters[, "d_e"]                      <- input$r_discount/100
-        
-        
-        
-        
-        
-        df_ce <- foreach::foreach(g = 1:input$n_iter, .combine = rbind) %dopar% {
-          
-          l_param_psa <- as.list(m_Parameters[g, ])
-          l_param_psa <- c(l_param_psa, l_input_general) # Combine with the general input
-          
-          
-          # Run the model
-          l_out_temp <- calculate_cea_output_VOI_COVID(l_param_psa, n_wtp = l_param_psa$wtp, verbose = FALSE)
-          
-          df_ce <- c(l_out_temp$Cost, 
-                     l_out_temp$Effect, 
-                     l_out_temp$LY,
-                     l_out_temp$NMB,
-                     l_out_temp$NHB)
-          
-        }
-        
-        # Save the output
-        m_output_par[, "Costs notrt"]   <- df_ce[, 1]
-        m_output_par[, "Costs trt"]     <- df_ce[, 2]
-        
-        m_output_par[, "QALY notrt"]    <- df_ce[, 3]
-        m_output_par[, "QALY trt"]      <- df_ce[, 4]
-        
-        m_output_par[, "LY notrt"]      <- df_ce[, 5]
-        m_output_par[, "LY trt"]        <- df_ce[, 6]
-        
-        # Add storing the values of each iterations 
-        m_C_psa[, "notrt"] <- m_output_par[, "Costs notrt"]
-        m_C_psa[, "trt"]   <- m_output_par[, "Costs trt"]
-        
-        m_E_psa[, "notrt"] <- m_output_par[, "QALY notrt"]
-        m_E_psa[, "trt"]   <- m_output_par[, "QALY trt"]
-      }
-      
-      stopCluster(cl)
->>>>>>> Stashed changes
       
   })
     
     # Do the CEA calculation 
     output$df_CEA_PSA <- renderTable({
-<<<<<<< Updated upstream
 
       
-=======
->>>>>>> Stashed changes
       df_cea_QALY_PSA <- calculate_icers(cost   =     colMeans(m_C_psa),
                                          effect     = colMeans(m_E_psa),
                                          strategies = l_out_temp$Strategy)
       df_cea_QALY_PSA
       
       df_cea_QALY_PSA %>% arrange(desc(Strategy))  # Have trt first row
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
     })
     
     output$plot_CE_PSA <- renderPlot({
       
       plot_CE_PSA <- make_psa_obj(cost  = as.data.frame(m_C_psa), 
                                   effectiveness  = as.data.frame(m_E_psa),
-<<<<<<< Updated upstream
                                   parameters = m_Parameters[1:input$n_iter, ],
-=======
-                                  parameters =m_Parameters[1:input$n_iter, ],
->>>>>>> Stashed changes
                                   strategies = l_out_temp$Strategy)
       plot(plot_CE_PSA) + 
         labs(title     = paste("Cost-effectiveness plane"), 
@@ -857,18 +596,12 @@ server <- function(input, output) {
         geom_vline(xintercept = 0, color = my_darkgray, size = 0.6) +
         geom_hline(yintercept = 0, color = my_darkgray, size = 0.6) +
         scale_color_manual(values = c(my_lightred, my_green, my_black)) + 
-<<<<<<< Updated upstream
         scale_fill_manual(values  = c(my_lightred, my_green, my_black))
 
-=======
-        scale_fill_manual(values = c(my_lightred, my_green, my_black))
-      
->>>>>>> Stashed changes
       
     })
     
     
-<<<<<<< Updated upstream
   })  # close observe event PA
   
   observeEvent(input$RunVOI, {
@@ -903,11 +636,6 @@ server <- function(input, output) {
     
     
   })
-=======
-  })
-  
-
->>>>>>> Stashed changes
   
 
   
@@ -919,10 +647,6 @@ server <- function(input, output) {
     
     # Update file 'date creation'
     Sys.setFileTime(p, now())
-<<<<<<< Updated upstream
-=======
-    print("test")
->>>>>>> Stashed changes
   
   }) # onStop
 }

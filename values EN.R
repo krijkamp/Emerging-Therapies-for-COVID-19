@@ -5,6 +5,7 @@
 # Load the values in shiny app applications
 
 n_eff_size    <- 0.82             # effect size treatment
+<<<<<<< Updated upstream
 ci_eff_size   <- c(0.72, 0.94)    # confidence interval of the effect size 
 
 n_eff_size_vent <- 0.640
@@ -19,6 +20,20 @@ LOS_noTrt    <- 13            # Length of stay without the therapy
 
 r_discount   <- 3             # the discount rate
 n_iter       <- 100           # then number of PSA iteration 
+=======
+ci_eff_size   <- c(0.47, 1.13)    # confidence interval of the effect size 
+
+
+n_costs     <- 1.9                 # cost of the drug 
+ci_costs    <- c(1.425, 2.564)     # confidence interval costs drug 
+n_Trt       <- 7                   # number of required doses of the treatment
+
+LOS_Trt      <- 11            # Length of stay with the therapy
+LOS_noTrt    <- 12            # Length of stay without the therapy
+
+r_discount    <- 3             # the discount rate
+n_iter       <- 100            # then number of PSA iteration 
+>>>>>>> Stashed changes
 
 n_wtp        <- 100000        # the willingness-to-pay in $/QALY
 n_H_future   <- 88000         # the future number of hospitalized patients 
@@ -30,6 +45,7 @@ n_age_max <- 120       # max. age for life time horizon analysis
 n_DpC     <- 73        # days per cycle
 n_DpY     <- 365       # days per year
 d_c       <- 0.03      # discount rate 
+<<<<<<< Updated upstream
 
 # utility values
 # Hospitalized
@@ -47,3 +63,5 @@ sd_u_R_IC <- 0.301
 
 
 
+=======
+>>>>>>> Stashed changes

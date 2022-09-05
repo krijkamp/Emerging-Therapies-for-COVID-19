@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 
 # layout for Shiny
 title = "Emerging Therapies for COVID-19: the value of performing clinical trials" 
@@ -6,6 +7,16 @@ title = "Emerging Therapies for COVID-19: the value of performing clinical trial
 Subtitle1  = h3("This tool interactively shows the most updated result of the manuscript Emerging Therapies for COVID-19: the value of performing clinical trials.") 
 
 Subtitle1.1 = h4("In the panel on the left, you can adjust parameter values for a COVID-19 therapy of interest. The results of the model will be shown in the results panel on the right. For details about the structure and assumptions of the model, see the panel called [About the tool] and peer-reviewed publication [ADD CITATION].")
+=======
+lng = "USA"
+# layout for Shiny
+title = "Emerging Therapies for COVID-19: the Value of More Clinical Research vs Treatment Implementation" 
+
+# subtitle/explanations
+Subtitle1  = h3("This tool interactively shows the most updated result of the manuscript Emerging Therapies for COVID-19: the Value of More Clinical Research vs Treatment Implementation.") 
+
+Subtitle1.1 = h4("In the panel on the left, you can adjust parameter values for a COVID-19 therapy of interest. The results of the model will be shown in the results panel on the right. For details about the structure and assumptions of the model, see the panel called [About the tool].")
+>>>>>>> Stashed changes
 
 # Explanation 
 Credits2  = h5("Research collaboration of Stijntje Dijk, Eline Krijkamp, Natalia Kunst, Cary Gross, John Wong, Myriam Hunink. Corresponding author: m.hunink@erasmusmc.nl") 
@@ -16,18 +27,29 @@ Credits3  = h5("Affiliations: Department of Epidemiology, Erasmus University Med
 Credits4 = h5("Shiny application created by Eline Krijkamp. Please report any bugs and inconsistencies to e.krijkamp@erasmusmc.nl") 
 
 Instructions0 =  h3("Instructions:") 
+<<<<<<< Updated upstream
 Instructions1 =  p("Adjust the parameters of interest. The basecase code will update automatically. To run the probabilistic analysis, click on the [run PA] botton.") 
 
 Tab0_0 = "Drug inputs" 
 Tab0_1 = "Model inputs"
 Tab0_1_1 = "Utility inputs"
+=======
+Instructions1 =  p("Adjust the parameters of interest. The basecase code will update automatically. For the probabilistic sensitivity analysis click on the run botton.") 
+
+Tab0_0 = "Drug inputs" 
+Tab0_1 = "Model inputs"
+>>>>>>> Stashed changes
 Tab0_2 = "VOI inputs"
 Tab0_3 = "About the Tool"
 
 
 Tab1_1 = h3("Modify to see how the results vary due to changes in the parameter values.") 
+<<<<<<< Updated upstream
 Tab1_2 = h4("Specify effect size")
 Tab1_2_1 = h5("when on mechanical ventilation")
+=======
+Tab1_2 = h4("Specifyeffect size")
+>>>>>>> Stashed changes
 Tab1_3 = h4("Specify treatment costs")
 
 
@@ -39,11 +61,16 @@ Tab1_3 = h4("Specify treatment costs")
 # Mortality control group 
 
 # Effect size
+<<<<<<< Updated upstream
 Slider1    = "Hazard ratio of mortality without ventilation(treatment compared to no treatment)" 
 Slider1_1  = "95%-CI Hazard ratio" 
 Slider1_2    = "Hazard ratio of mortality WITH ventilation (treatment compared to no treatment)" 
 Slider1_3  = "95%-CI Hazard ratio WITH  ventilation"
 
+=======
+Slider1    = "Hazard ratio of mortality" 
+Slider1_1  = "95%-CI Hazard ratio" 
+>>>>>>> Stashed changes
 # Cost of the therapy
 Slider2    = "Cost therapy per dose ($)" 
 Slider2_1  = "95%-CI costs therapy per dose:" 
@@ -53,13 +80,19 @@ Slider2_2  = "Number of doses per patient"
 Slider3    = "Length of stay with therapy (days):" 
 Slider3_1  = "CI length of stay"
 Slider4    = "Length of stay without therapy (days):" 
+<<<<<<< Updated upstream
 Slider4_1  = "Probability of being admitted to the ICU"
 Slider5    = "Discount rate (%)" 
 Slider6    = "Number of PA iteration:" 
+=======
+Slider5    = "Discount rate (%)" 
+Slider6    = "Number of PSA iteration:" 
+>>>>>>> Stashed changes
 
 Slider7   = "Willingness-to-pay ($/QALY)" 
 
 Population0  = "Future patients"
+<<<<<<< Updated upstream
 Population0_1 = h5("The number of patients expected to be hospitalized after the trial results are available")
 Population1  = "Current patients"
 Population1_1 = h5("Expected number of patients to be hospitalized in the USA while awaiting trial results and their implementation over a 3 months period")
@@ -72,12 +105,23 @@ Tab_instr3   = h5("Click [run PA] after changing the number of PA iterations. No
 Tab_instr3.1 = h5("NOTE: these utiliy values are only evaluated in the basecase analysis. For the PA analysis, the distribution as specified in the manuscript is used")
 Tab_instr4   = h4("Change these values for the VOI analysis.")
 Tab_instr5   = h5("Click [run VOI] to run the analysis, but make sure you first run the PA analysis")
+=======
+Population1  = "Current patients"
+
+
+Tab_instr1 = h4("Specify the length of stay") 
+Tab_instr2 = h4("Change these values if you would like to consider different model assumptions in the calculations.")
+Tab_instr3 = h5("Click run model after changing the number of PSA iterations. Note, the simulation takes a couple of minutes")
+Tab_instr4 = h4("Change these values for the VOI analysis.")
+Tab_instr5 = h5("Click run VOI to run the analysis, but make sure you first run the PSA analysis")
+>>>>>>> Stashed changes
 
 
 Main_Output1 =  tabPanel( title = "Results",
   br(),
   h3(strong("With this therapy:")),
   h4(strong("Basecase values:")),
+<<<<<<< Updated upstream
   h5("Cost = US dollar, Effect = QALY, LY = Life years, NMB: Net monetary benefit for QALYs, NHB: Net health benefit for QALYs, NMB_LY: Net monetary benefit for LYs, NHB_LY: Net health benefit for LYs"),
   tableOutput("df_basecase"),
   h4(strong("Basecase cost-effectiveness results:")),
@@ -91,6 +135,17 @@ Main_Output1 =  tabPanel( title = "Results",
   tableOutput("df_CEA_PSA"),
   h4(strong("Expected net benefit results:")),
   textOutput("test"),
+=======
+  tableOutput("df_basecase"),
+  h4(strong("Basecase cost-effectiveness results:")),
+  tableOutput("df_CEA_basecase"),
+  h5("Effect = QALY and Cost = US dollar"),
+  h4(strong("PSA cost-effectiveness results:")),
+  p("Click the [Run PSA] button to see the (changes in the) PSA results. Please note that this simulation takes some time."),
+  plotOutput("plot_CE_PSA"),
+  tableOutput("df_CEA_PSA"),
+  h4(strong("Expected net benefit results:")),
+>>>>>>> Stashed changes
   p("Click the [Run VOI] button to see (changes in the) VOI results. Please note that this simulation takes some time.")
   
 )

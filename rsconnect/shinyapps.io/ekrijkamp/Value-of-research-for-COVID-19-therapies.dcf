@@ -5,9 +5,16 @@ account: ekrijkamp
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4028489
+<<<<<<< Updated upstream
 bundleId: 4910969
 url: https://ekrijkamp.shinyapps.io/Value-of-research-for-COVID-19-therapies/
 when: 1628675661.56457
 lastSyncTime: 1628675661.56458
+=======
+bundleId: 4743458
+url: https://ekrijkamp.shinyapps.io/Value-of-research-for-COVID-19-therapies/
+when: 1624370147.70031
+lastSyncTime: 1624370147.70032
+>>>>>>> Stashed changes
 asMultiple: FALSE
 asStatic: FALSE
