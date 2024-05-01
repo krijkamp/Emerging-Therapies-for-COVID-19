@@ -1,0 +1,702 @@
+---
+title: "Cumulative Meta Analysis"
+output: html_document
+---
+
+# Project information
+This code, downloaded from https://github.com/krijkamp/Emerging-Therapies-for-COVID-19, is part of the paper Making Drug Approval Decisions in the face of Uncertainty: Cumulative Evidence versus Value of Information published in Medical Decision Making.
+
+The code is part of a larger project on the evaluation of emerging COVID-19 therapies, for which we refer to our earlier publication:
+Dijk, S. W., Krijkamp, E. M., Kunst, N., Gross, C. P., Wong, J. B., & Hunink, M. M. (2022). Emerging therapies for COVID-19: the value of information from more clinical trials. Value in Health, 25(8), 1268-1280. Available from: https://www.valueinhealthjournal.com/article/S1098-3015(22)00158-9/fulltext 
+This section runs the meta-analysis used in the decision model
+
+## 00 Knitting setup
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "./") # set working directory to the root directory rather than another sub-folder where the RMarkdown file is saved
+```
+
+# 00 Clean global environment
+```{r, eval = FALSE}
+# Clean list
+rm(list = ls())
+```
+
+
+# 01 Load packages
+```{r, eval = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+if (!require('pacman')) install.packages('pacman'); library(pacman) 
+# use this package to conveniently install other packages
+p_load("tidyverse","meta", "metafor", "esc", "devtools", "maps", "ggplot2", "mapproj", "meta", "metadat")
+#devtools::install_github("MathiasHarrer/dmetar")
+```
+
+# 02 Load data
+```{r}
+# Full dataset
+df_ma_full       <- data.frame(readxl::read_xlsx("../data/parameters_cumulative_4.xlsx", 
+                                            sheet = "MA_input")) # Parameters MA
+
+# FDA dataset
+df_fda_ma   <- data.frame(readxl::read_xlsx("../data/parameters_cumulative_4.xlsx", 
+                                            sheet = "FDA_MA_input")) # Parameters MA FDA subgroup analysis
+
+# Save param trt that is used in the Cost-Effectiveness Analysis, to adjust structure of the Meta-Analysis output accordingly
+param_trt   <- data.frame(readxl::read_xlsx("../data/parameters_cumulative_4.xlsx", 
+                                            sheet = "Rx")) # Parameters relating to treatment
+
+```
+
+# 03 Specify settings
+```{r}
+color_print <- "#dfb94c"
+
+# Order chronologically
+df_ma_full <- df_ma_full[order(df_ma_full$Publ_date), ]
+df_fda_ma <- df_fda_ma[order(df_fda_ma$Publ_date), ]
+
+df_ma_full$N_enrolled_cumulative <- cumsum(df_ma_full$N_enrolled)
+df_fda_ma$N_enrolled_cumulative <- cumsum(df_fda_ma$N_enrolled)
+```
+
+
+# 04 Specify and run meta-analysis
+```{r}
+perform_MA <- function(analysis_type) {
+  # Check for correct input
+  if (!(analysis_type %in% c("full", "fda_only"))) {
+    stop("Invalid analysis_type. Choose 'full' or 'fda_only'.")
+  }
+  
+  # Choose the appropriate data based on the analysis type
+  if (analysis_type == "full") {
+    df_ma <- df_ma_full
+    output_prefix <- "_full"
+  } else { # fda_only
+    df_ma <-df_fda_ma
+    output_prefix <- "_FDA"
+  }
+
+# 03 Describe data
+desc_data <- data.frame(
+  Description = c("Total enrolled",
+                  "Total intervention arm",
+                  "Total control arm",
+                  "Total Mortality Rx",
+                  "N studies <10 deaths in intervention arm",
+                  "Total Mortality Cx arm",
+                  "N studies <10 deaths in control arm"),
+  Value = c(sum(df_ma$N_enrolled),
+            sum(df_ma$n_RXarm1),
+            sum(df_ma$n_CTRL),
+            sum(df_ma$mort_RXarm1),
+            length(df_ma$mort_RXarm1[df_ma$mort_RXarm1 < 10]),
+            sum(df_ma$mort_CTRL),
+            length(df_ma$mort_CTRL[df_ma$mort_CTRL < 10]))
+)
+
+  
+### Using Trial names
+metaresult <- meta::metabin(df_ma$mort_RXarm1, df_ma$n_RXarm1, df_ma$mort_CTRL, 
+                      df_ma$n_CTRL, studlab = df_ma$Trial_name,
+                      method = "MH", sm = "RR",MH.exact = TRUE,
+                      fixed = FALSE, random = TRUE, method.tau = "PM", hakn = TRUE,    prediction = TRUE )
+summary(metaresult)
+
+# Forest plot of the traditional meta-analysis
+plot_MA <- forest(metaresult,
+            prediction = TRUE,
+            print.I2 = TRUE,
+            col.study = color_print,
+            col.diamond = color_print,
+            test.overall = TRUE,
+            fs.test.overall = 11,
+            print.stat = FALSE,
+            icols = df_ma$percentage_severe,
+            leftcols = c("studlab", "seTE", "pval"),
+            leftlabs = c("Author", "SE", "pvalue"))
+plot_MA
+
+
+# Save the plot as image
+png(file = paste0("../figures/plot_traditional_MA", output_prefix, ".png"), width = 12, height = 6, units = 'in', res = 300)
+forest(metaresult,
+ prediction = TRUE,
+ print.I2 = TRUE,
+ col.study = color_print,
+ col.diamond = color_print,
+ test.overall = TRUE,
+ fs.test.overall = 11,
+ print.stat = FALSE,
+ icols = df_ma$percentage_severe,
+ leftcols = c("studlab", "seTE", "pval"),
+ leftlabs = c("Author", "SE", "pvalue"),
+            main = "Meta-analysis",
+            width.plot = 0.9)
+dev.off()
+  
+# 05 Calculate the pooled estimate Cumulative meta-analysis
+# Ordering by date as dataset df_ma is not arranged by date
+df1 <- df_ma[order(as.Date(df_ma$Publ_date, format = "%Y/%m/%d")),]
+df1
+
+# Calculating cumulative meta-analysis
+formetacum <- metabin(df1$mort_RXarm1, df1$n_RXarm1, df1$mort_CTRL, 
+                      df1$n_CTRL, studlab = df1$Trial_name, 
+                      method = "MH", sm = "RR", incr = 0.5, 
+                      fixed = FALSE, random = TRUE, method.tau = "PM", hakn = TRUE, prediction = TRUE)
+cum_ma <- metacum(formetacum, pooled = "random")
+print(cum_ma)
+summary(cum_ma)
+
+# Forest plot of cumulative meta-analysis
+plot_cum_MA <- forest(cum_ma,
+            prediction = TRUE,
+            print.I2 = TRUE,
+            col.study = color_print,
+            col.diamond = color_print,
+            test.overall = TRUE,
+            print.stat = FALSE,
+            leftcols = c("studlab", "seTE"),
+            leftlabs = c("Author", "SE"))
+plot_cum_MA
+
+png(file = paste0("../figures/plot_cum_MA", output_prefix, ".png"), width = 12, height = 6, units = 'in', res = 300)
+forest(cum_ma,
+            prediction = TRUE,
+            print.I2 = TRUE,
+            col.study = color_print,
+            col.diamond = color_print,
+            test.overall = TRUE,
+            print.stat = FALSE,
+            leftcols = c("studlab", "seTE"),
+            leftlabs = c("Author", "SE"),
+            main = "Cumulative Meta-analysis",
+            width.plot = 0.9)
+dev.off()
+
+png(file = paste0("../figures/funnel_plot", output_prefix, ".png"), width = 10, height = 6, units = 'in', res = 300)
+funnel(metaresult,
+            xlim = c(0.01, 20),
+            studlab = TRUE,
+            cex = 0.8,
+            col = color_print,
+            cex.studlab = 0.5,
+            pos.studlab=1,
+            ref.triangle=TRUE,
+            col.ref = "lightgrey")
+title("Funnel Plot")
+dev.off()
+  
+  save(desc_data, file = paste0("../output/desc_data", output_prefix, ".RData"))
+  assign(paste0("desc_data", output_prefix), desc_data, envir = .GlobalEnv)
+
+  save(metaresult, file = paste0("../output/metaresult", output_prefix, ".RData"))
+  assign(paste0("metaresult", output_prefix), metaresult, envir = .GlobalEnv)
+
+  save(cum_ma, file = paste0("../output/cum_ma", output_prefix, ".RData"))
+  assign(paste0("cum_ma", output_prefix), cum_ma, envir = .GlobalEnv)
+
+  save(plot_MA, file = paste0("../output/plot_MA", output_prefix, ".RData"))
+  assign(paste0("plot_MA", output_prefix), plot_MA, envir = .GlobalEnv)
+
+  save(plot_cum_MA, file = paste0("../output/plot_cum_MA", output_prefix, ".RData"))
+  assign(paste0("plot_cum_MA", output_prefix), plot_cum_MA, envir = .GlobalEnv)
+}
+
+# Run the generate_ma() function for both datasets
+perform_MA(analysis_type = "full")
+perform_MA(analysis_type = "fda_only")
+```
+
+
+
+#05 Prepare results structure for CEA/VOI model input
+Choose the relevant analysis, currently specified as "full" or "fda_only". If adding additional subgroups like tocilizumab only, ICU only or additional timeframes, or other sensitivity analyses, include these options in the prepare_cea function under analysis_type and run the analysis for the relevant subgroup
+
+```{r, eval = FALSE}
+prepare_cea <- function(analysis_type) {
+  # Check for correct input
+  if (!(analysis_type %in% c("full", "fda_only"))) {
+    stop("Invalid analysis_type. Choose 'full' or 'fda_only'.")
+  }
+  
+  # Choose the appropriate data based on the analysis type
+  if (analysis_type == "full") {
+    ma <- cum_ma_full
+    plot_ma <- plot_cum_MA_full
+    df_rr <- df_ma_full
+    output_prefix <- "_full"
+  } else { # fda_only
+    ma <- cum_ma_FDA
+    plot_ma <- plot_cum_MA_FDA
+    df_rr <- df_fda_ma
+    output_prefix <- "_FDA"
+  }
+  
+  n_studies <- nrow(df_rr)
+
+##10.2 Prepare results
+# Create dataframe that is compatible with param_trt
+
+# Save vectors for treatment effect and confidence intervals
+ma_trt_e    <- tail(plot_ma$effect.format, n_studies) # Treatment effect
+ma_trt_e_ci <- tail(plot_ma$ci.format, n_studies) # Confidence interval
+ma_trt_e_lo <- sapply(strsplit(ma_trt_e_ci, ";"), function(x) as.numeric(sub("\\[", "", x[1])))
+ma_trt_e_hi <- sapply(strsplit(ma_trt_e_ci, ";"), function(x) as.numeric(sub("\\]", "", x[2])))
+
+rr_ci <- data.frame(
+  Treatment = ma$studlab[1:n_studies],
+  Country = "All",
+  Param = "rr_D_Trt_timespan1",
+  Unit = "RR",
+  Unit_amount = 28,
+  Med = ma_trt_e,
+  Lo_alpha = ma_trt_e_lo,
+  Hi_beta = ma_trt_e_hi,
+  Distribution = "Lognormal",
+  Assumption = NA,
+  source = "Cumulative Meta-analysis",
+  description = "Cumulative effect (RR: Rx/Cx) at time of publication",
+  remarks_and_questions = NA
+)
+
+# Check whether table is correct, in comparison to the plotted meta-analysis
+forest(ma,
+            prediction = FALSE,
+            print.I2 = FALSE,
+            col.study = color_print,
+            col.diamond = color_print,
+            test.overall = TRUE,
+            print.stat = FALSE,
+            leftcols = c("studlab", "seTE"),
+            leftlabs = c("Author", "SE", "pvalue"))
+
+# Adjust treatment names
+trt_names_ma <- gsub("Adding ", "", rr_ci$Treatment) # remove "ADDING"
+trt_names_ma <- gsub("\\s*\\(k=\\d+\\)", "", trt_names_ma) # remove k number
+
+treatment_dates <- as.character(df_rr$Publ_date)
+treatment_dates <- gsub(" UTC", "", treatment_dates)
+
+letters_vec <- LETTERS[1:26] # If adding letters before trt name
+#k_vec <- paste("k", 1:n_studies, sep = "") # If adding k# before trt name
+k_vec <- sprintf("k%02d", 1:n_studies) # If adding k0 before treat names <2 digits (expand if more than 100 studies are included)
+
+# Adding k#
+new_name_trt <- c()
+for (i in 1:length(treatment_dates)) {
+  new_name_trt[i] <- paste(trt_names_ma[i], treatment_dates[i], sep = "_")
+  new_name_trt[i] <- paste(k_vec[i], new_name_trt[i], sep = "_")
+}
+rr_ci$Treatment <- new_name_trt
+
+#11 Extract MA policy recommendation and cumulative number of patients
+rr_ci_qual <- rr_ci # Create copy of rr_ci, in order to keep the correct names and check if the suggested policy is indeed the correct one
+
+# Calculate the suggested optimal strategy, create new column
+rr_ci_qual$new_Med <- case_when(
+           rr_ci_qual$Med < 1 & rr_ci_qual$Hi_beta < 1 ~ "Approve",
+           rr_ci_qual$Med < 1 & rr_ci_qual$Hi_beta >= 1 ~ "AWR",
+           rr_ci_qual$Med >= 1 & rr_ci_qual$Lo_alpha >= 1 ~ "Reject",
+           rr_ci_qual$Med >= 1 & rr_ci_qual$Lo_alpha < 1 ~ "OIR"
+         )
+
+# Create cumulative number of patients vector
+n_cumsum_vec <- df_rr$N_enrolled_cumulative
+
+#12 Prepare qualitative structure for CEA/VOI model input
+# Remove column "Med"
+rr_ci_qual <- rr_ci_qual[, !(colnames(rr_ci_qual) %in% c("Med"))]
+
+# Rename column "new_Med" to "Med"
+colnames(rr_ci_qual)[colnames(rr_ci_qual) == "new_Med"] <- "Med"
+
+# Replace values under column Param with "cma_strategy"
+rr_ci_qual$Param <- "cma_strategy"
+
+# Replace values under "Unit" with "strategy"
+rr_ci_qual$Unit <- "strategy"
+
+# Replace values under description with "Optimal strategy suggested by Cumulative Meta-Analysis"
+rr_ci_qual$description <- "Optimal strategy suggested by Cumulative Meta-Analysis"
+
+# Replace values under Unit_amount, Lo_alpha, Hi_beta, Distribution with NA
+rr_ci_qual$Unit_amount <- NA
+rr_ci_qual$Lo_alpha <- NA
+rr_ci_qual$Hi_beta <- NA
+rr_ci_qual$Distribution <- NA
+
+# Reorder the dataframe
+rr_ci_qual <- rr_ci_qual[, c("Treatment", "Country", "Param", "Unit", "Unit_amount", "Med",
+                             "Lo_alpha", "Hi_beta", "Distribution", "Assumption", "source", 
+                             "description", "remarks_and_questions")]
+
+# Print the modified dataframe
+print(rr_ci_qual)
+
+# Create empty dataframe
+new_df <- data.frame()
+# Loop through each Treatment value
+for (i in 1:length(unique(rr_ci_qual$Treatment))) {
+  # Create a new row for Param = "study_add"
+  row1 <- rr_ci_qual[i, ]
+  row1["Param"] <- "study_add"
+  row1["Unit"] <- "number"
+  row1["Med"] <- k_vec[i]
+  row1["description"] <- "The kth study added to the meta analysis"
+  new_df <- rbind(new_df, row1)
+  
+  # Create a new row for Param = "rct_start"
+  row2 <- rr_ci_qual[i, ]
+  row2["Param"] <- "rct_start"
+  row2["Unit"] <- "date"
+  row2["Med"] <- treatment_dates[i]
+  row2["description"] <- "The publication date of the relevant study"
+  new_df <- rbind(new_df, row2)
+  
+  # Create a new row for Param = "acronym"
+  row3 <- rr_ci_qual[i, ]
+  row3["Param"] <- "acronym"
+  row3["Unit"] <- "name"
+  row3["Med"] <- trt_names_ma[i]
+  row3["description"] <- "The trial acronym if present (otherwise, the first author name is used"
+  new_df <- rbind(new_df, row3)
+  
+    # Create a new row for Param = "cumulative enrollment"
+  row4 <- rr_ci_qual[i, ]
+  row4["Param"] <- "N_cumsum"
+  row4["Unit"] <- "number"
+  row4["Med"] <- n_cumsum_vec[i]
+  row4["description"] <- "Cumulative # of patients enrolled"
+  new_df <- rbind(new_df, row4)
+  
+  }
+
+rr_ci_qual<- rbind(rr_ci_qual,new_df)
+rr_ci_qual <- rr_ci_qual[order(rr_ci_qual$Treatment), ] # sort on treatment
+
+# Save results
+
+save(rr_ci, file = paste0("../output/rr_ci", output_prefix,".RData"))
+save(rr_ci_qual, file = paste0("../output/rr_ci_qual", output_prefix,".RData"))
+
+
+# Assign also to global environment
+assign(paste0("rr_ci", output_prefix), rr_ci, envir = .GlobalEnv)
+assign(paste0("rr_ci_qual", output_prefix), rr_ci_qual, envir = .GlobalEnv)
+}
+
+# Call the function with the desired analysis type
+prepare_cea("full")
+prepare_cea("fda_only")
+```
+
+
+```{r}
+analysis_type = "full"
+meta_analysis_type = "cumulative"
+
+prepare_cea <- function(analysis_type, meta_analysis_type = "cumulative") {
+  # Check for correct input
+  if (!(analysis_type %in% c("full", "fda_only"))) {
+    stop("Invalid analysis_type. Choose 'full' or 'fda_only'.")
+  }
+  
+  if (!(meta_analysis_type %in% c("cumulative", "traditional"))) {
+    stop("Invalid meta_analysis_type. Choose 'cumulative' or 'traditional'.")
+  }
+  
+  # Choose the appropriate data based on the analysis type
+  if (analysis_type == "full") {
+    ma <- if (meta_analysis_type == "cumulative") cum_ma_full else metaresult_full
+    plot_ma <- if (meta_analysis_type == "cumulative") plot_cum_MA_full else plot_MA_full
+    df_rr <- df_ma_full
+    output_prefix <- "_full"
+  } else { # fda_only
+    ma <- if (meta_analysis_type == "cumulative") cum_ma_FDA else metaresult_FDA
+    plot_ma <- if (meta_analysis_type == "cumulative") plot_cum_MA_FDA else plot_MA_FDA
+    df_rr <- df_fda_ma
+    output_prefix <- "_FDA"
+  }
+  
+  n_studies <- nrow(df_rr)
+
+##10.2 Prepare results
+# Create dataframe that is compatible with param_trt
+
+# Save vectors for treatment effect and confidence intervals
+ma_trt_e    <- tail(plot_ma$effect.format, n_studies) # Treatment effect
+ma_trt_e_ci <- tail(plot_ma$ci.format, n_studies) # Confidence interval
+ma_trt_e_lo <- sapply(strsplit(ma_trt_e_ci, ";"), function(x) as.numeric(sub("\\[", "", x[1])))
+ma_trt_e_hi <- sapply(strsplit(ma_trt_e_ci, ";"), function(x) as.numeric(sub("\\]", "", x[2])))
+
+rr_ci <- data.frame(
+  Treatment = ma$studlab[1:n_studies],
+  Country = "All",
+  Param = "rr_D_Trt_timespan1",
+  Unit = "RR",
+  Unit_amount = 28,
+  Med = ma_trt_e,
+  Lo_alpha = ma_trt_e_lo,
+  Hi_beta = ma_trt_e_hi,
+  Distribution = "Lognormal",
+  Assumption = NA,
+  source = "Cumulative Meta-analysis",
+  description = "Cumulative effect (RR: Rx/Cx) at time of publication",
+  remarks_and_questions = NA
+)
+
+# Check whether table is correct, in comparison to the plotted meta-analysis
+forest(ma,
+            prediction = FALSE,
+            print.I2 = FALSE,
+            col.study = color_print,
+            col.diamond = color_print,
+            test.overall = TRUE,
+            print.stat = FALSE,
+            leftcols = c("studlab", "seTE"),
+            leftlabs = c("Author", "SE", "pvalue"))
+
+# Adjust treatment names
+trt_names_ma <- gsub("Adding ", "", rr_ci$Treatment) # remove "ADDING"
+trt_names_ma <- gsub("\\s*\\(k=\\d+\\)", "", trt_names_ma) # remove k number
+
+treatment_dates <- as.character(df_rr$Publ_date)
+treatment_dates <- gsub(" UTC", "", treatment_dates)
+
+letters_vec <- LETTERS[1:26] # If adding letters before trt name
+#k_vec <- paste("k", 1:n_studies, sep = "") # If adding k# before trt name
+k_vec <- sprintf("k%02d", 1:n_studies) # If adding k0 before treat names <2 digits (expand if more than 100 studies are included)
+
+# Adding k#
+new_name_trt <- c()
+for (i in 1:length(treatment_dates)) {
+  new_name_trt[i] <- paste(trt_names_ma[i], treatment_dates[i], sep = "_")
+  new_name_trt[i] <- paste(k_vec[i], new_name_trt[i], sep = "_")
+}
+rr_ci$Treatment <- new_name_trt
+
+#11 Extract MA policy recommendation and cumulative number of patients
+rr_ci_qual <- rr_ci # Create copy of rr_ci, in order to keep the correct names and check if the suggested policy is indeed the correct one
+
+# Calculate the suggested optimal strategy, create new column
+rr_ci_qual$new_Med <- case_when(
+           rr_ci_qual$Med < 1 & rr_ci_qual$Hi_beta < 1 ~ "Approve",
+           rr_ci_qual$Med < 1 & rr_ci_qual$Hi_beta >= 1 ~ "AWR",
+           rr_ci_qual$Med >= 1 & rr_ci_qual$Lo_alpha >= 1 ~ "Reject",
+           rr_ci_qual$Med >= 1 & rr_ci_qual$Lo_alpha < 1 ~ "OIR"
+         )
+
+# Cumulative enrollment
+if (meta_analysis_type == "cumulative") {
+  n_cumsum_vec <- df_rr$N_enrolled_cumulative
+} else if (meta_analysis_type == "traditional") {
+  n_cumsum_vec <- df_rr$N_enrolled
+}
+
+#12 Prepare qualitative structure for CEA/VOI model input
+# Remove column "Med"
+rr_ci_qual <- rr_ci_qual[, !(colnames(rr_ci_qual) %in% c("Med"))]
+
+# Rename column "new_Med" to "Med"
+colnames(rr_ci_qual)[colnames(rr_ci_qual) == "new_Med"] <- "Med"
+
+# Replace values under column Param with "cma_strategy"
+rr_ci_qual$Param <- "cma_strategy"
+
+# Replace values under "Unit" with "strategy"
+rr_ci_qual$Unit <- "strategy"
+
+# Replace values under description with "Optimal strategy suggested by Cumulative Meta-Analysis"
+rr_ci_qual$description <- "Optimal strategy suggested by Cumulative Meta-Analysis"
+
+# Replace values under Unit_amount, Lo_alpha, Hi_beta, Distribution with NA
+rr_ci_qual$Unit_amount <- NA
+rr_ci_qual$Lo_alpha <- NA
+rr_ci_qual$Hi_beta <- NA
+rr_ci_qual$Distribution <- NA
+
+# Reorder the dataframe
+rr_ci_qual <- rr_ci_qual[, c("Treatment", "Country", "Param", "Unit", "Unit_amount", "Med",
+                             "Lo_alpha", "Hi_beta", "Distribution", "Assumption", "source", 
+                             "description", "remarks_and_questions")]
+
+# Print the modified dataframe
+print(rr_ci_qual)
+
+# Create empty dataframe
+new_df <- data.frame()
+# Loop through each Treatment value
+for (i in 1:length(unique(rr_ci_qual$Treatment))) {
+  # Create a new row for Param = "study_add"
+  row1 <- rr_ci_qual[i, ]
+  row1["Param"] <- "study_add"
+  row1["Unit"] <- "number"
+  row1["Med"] <- k_vec[i]
+  row1["description"] <- "The kth study added to the meta analysis"
+  new_df <- rbind(new_df, row1)
+  
+  # Create a new row for Param = "rct_start"
+  row2 <- rr_ci_qual[i, ]
+  row2["Param"] <- "rct_start"
+  row2["Unit"] <- "date"
+  row2["Med"] <- treatment_dates[i]
+  row2["description"] <- "The publication date of the relevant study"
+  new_df <- rbind(new_df, row2)
+  
+  # Create a new row for Param = "acronym"
+  row3 <- rr_ci_qual[i, ]
+  row3["Param"] <- "acronym"
+  row3["Unit"] <- "name"
+  row3["Med"] <- trt_names_ma[i]
+  row3["description"] <- "The trial acronym if present (otherwise, the first author name is used"
+  new_df <- rbind(new_df, row3)
+  
+    # Create a new row for Param = "cumulative enrollment"
+  row4 <- rr_ci_qual[i, ]
+  row4["Param"] <- "N_cumsum"
+  row4["Unit"] <- "number"
+  row4["Med"] <- n_cumsum_vec[i]
+  row4["description"] <- "Cumulative # of patients enrolled"
+  new_df <- rbind(new_df, row4)
+  
+  }
+
+rr_ci_qual<- rbind(rr_ci_qual,new_df)
+rr_ci_qual <- rr_ci_qual[order(rr_ci_qual$Treatment), ] # sort on treatment
+
+# Save results
+  if (meta_analysis_type == "cumulative") {
+    save(rr_ci, file = paste0("../output/rr_ci", output_prefix, ".RData"))
+    save(rr_ci_qual, file = paste0("../output/rr_ci_qual", output_prefix, ".RData"))
+  } else { # traditional
+    save(rr_ci, file = paste0("../output/rr_ci", output_prefix, "_trad.RData"))
+    save(rr_ci_qual, file = paste0("../output/rr_ci_qual", output_prefix, "_trad.RData"))
+  }
+
+  # Assign also to global environment
+  if (meta_analysis_type == "cumulative") {
+    assign(paste0("rr_ci", output_prefix), rr_ci, envir = .GlobalEnv)
+    assign(paste0("rr_ci_qual", output_prefix), rr_ci_qual, envir = .GlobalEnv)
+  } else { # traditional
+    assign(paste0("rr_ci", output_prefix, "_trad"), rr_ci, envir = .GlobalEnv)
+    assign(paste0("rr_ci_qual", output_prefix, "_trad"), rr_ci_qual, envir = .GlobalEnv)
+  }
+}
+
+# Call the function with the desired analysis type
+prepare_cea("full", "cumulative")
+prepare_cea("full", "traditional")
+prepare_cea("fda_only", "cumulative")
+prepare_cea("fda_only", "traditional")
+```
+
+
+#06 Check results
+```{r}
+rr_ci_full
+rr_ci_qual_full
+
+rr_ci_FDA
+rr_ci_qual_FDA
+
+rr_ci_full_trad
+rr_ci_qual_full_trad
+
+rr_ci_FDA_trad
+rr_ci_qual_FDA_trad
+```
+
+
+# 07 Create world map of included studies (full analysis)
+```{r}
+# Load map data
+world_map = map_data("world")
+
+distinct(world_map, region) %>% 
+  ggplot(aes(map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat)
+
+# Create a dataframe with the countries and their frequency
+region <- df_ma_full$location
+# Replace commas followed by space and "and" with pipe symbol
+region <- gsub(",\\s*", "|", region)
+region <- gsub("\\s+and\\s+", "|", region)
+
+# Split strings on pipe symbol and unnest
+region <- region %>% 
+  strsplit("\\|") %>% 
+  unlist()
+
+freq <- table(region)
+df_region <- data.frame(region = names(freq), freq = as.numeric(freq), stringsAsFactors = FALSE)
+
+# Get the world map data
+world_map <- map_data("world")
+
+# Merge the frequency data with the map data
+merged_data <- merge(world_map, df_region, by = "region", all.x = TRUE)
+
+distinct(merged_data) %>% 
+  ggplot(aes(map_id = region, fill = freq)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat)
+
+distinct(merged_data) %>% 
+  ggplot(aes(map_id = region, fill = freq)) +
+  geom_map(map = world_map, color = "white", size = 0.1) +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  scale_fill_gradient(low = "#f8f1db", high = color_print, na.value = "grey90") +
+  labs(fill = "Frequency") +
+  ggtitle("Global distribution of studies included in the meta-analysis") +
+  theme_void()
+
+# save the plot in ../figures/ma_worldmap.png
+ggsave("../figures/ma_worldmap.png", bg = "white", width = 10, height = 6)
+
+```
+
+#08 Meta-regression: Severity (full analysis)
+```{r}
+severity <- df_ma_full$percentage_severe # Note: Be sure that the papers are listed in chronological order, otherwise reorder these prior to this step
+m.sev <- rma(yi = TE,
+              sei = seTE,
+              data = metaresult_full,
+              method = "ML",
+              mods = ~ severity,
+              test = "knha")
+
+summary(m.sev)
+
+m.gen.reg <- metareg(metaresult_full, ~severity)
+summary(m.gen.reg)
+
+
+meta::bubble(m.gen.reg, 
+       studlab = TRUE, cex.studlab = 0.8,offset =0.2,
+       xlim = c(0, 100), ylim = c(0.05, 3.0), col.line = color_print, col.ref = "black",
+       xlab = "Percentage severity", ylab = "Relative risk of mortality (Rx/Ctr)",
+       pos = 1, regline = TRUE, lwd = 2,
+       min.cex = 1,
+       max.cex = 6,
+       axes = TRUE, box = TRUE)
+```
+
+# 09 Acknowlegdement
+This study is based on our initial publication and model on emerging COVID-19 therapies. The current version of the projects expands on the initial project by taking into account the cumulative accrual of evidence across a timeline and integrates the predictions as they came out across time. The original work can be read on through in the following published work:
+Dijk, S. W., Krijkamp, E. M., Kunst, N., Gross, C. P., Wong, J. B., & Hunink, M. M. (2022). Emerging therapies for COVID-19: the value of information from more clinical trials. Value in Health, 25(8), 1268-1280. <https://doi.org/10.1016/j.jval.2022.03.016>
+
+All references to input parameters and datasets can be found in the provided excel parameters sheet and the main manuscript of this paper
+
+For this study we made use of the template developed by the Decision Analysis in R for Technologies in Health (DARTH) workgroup: <http://darthworkgroup.com>.
+We also build on the work performed by the Collaborative Network for Value of Information (ConVOI) group
+
+We also thank the Institute For Health Metrics and Evaluation (IHME). Without their efforts to collect and make hospitalization data publicly available throughout the pandemic timeline, this methodological work would not be possible
+
+Additionally, we are greatful for the work by Mathias Harrer, who has provided example code and instructions to perform meta-analysis in R. His book can be accessed via https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/
+
+This research was funded by the Gordon and Betty Moore Foundation through grant GBMF9634 to Johns Hopkins University to support the work of the Society for Medical Decision Making COVID-19 Decision Modeling Initiative.
+
+
