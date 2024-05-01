@@ -21,11 +21,16 @@ Project 1 investigates the approval process of hydroxychloroquine, remdesivir, c
 
 Project 2 is a methodological review of the alternative methods to decision making in the pandemic and their performance for monoclonal antibodies (MAb) approval in hospitalized COVID-19 patients
 
+<<<<<<< Updated upstream
 
 # Code availability
 Through this github page, we make all code available, so that our work can be adopted / built upon further. We kindly ask you to reference both manuscripts. We strongly recommend to download the entire folder and start by opening the .Rproject. The code includes all steps, from data preparation, meta-analysis, cost-effectiveness analysis, probabilistic analysis, value of information analysis to figures and sensitivity analyses.
 
 Note that additional datasets must be downloaded from their original sources (IHME data) in order to run the full code. Instructions to do so are included within the code.
+=======
+The full source code of the project can be found the folder analysis folder.
+We strongly recommend to download the entire folder and start by opening the .Rproject
+>>>>>>> Stashed changes
 
 
 
